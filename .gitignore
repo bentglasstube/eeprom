@@ -1,0 +1,7 @@
+bazel-*
+eeprom-*.zip
+eeprom-*.tgz
+*.app
+gam
+output
+res/*.mmpz.bak
