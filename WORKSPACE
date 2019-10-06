@@ -1,9 +1,14 @@
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
-git_repository(
+# git_repository(
+#     name = "libgam",
+#     remote = "https://git.sr.ht/~bentglasstube/gam",
+#     tag = "v1.8",
+# )
+
+local_repository(
     name = "libgam",
-    remote = "https://git.sr.ht/~bentglasstube/gam",
-    tag = "v1.8",
+    path = "/home/alan/source/gam/",
 )
 
 git_repository(

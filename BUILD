@@ -79,6 +79,7 @@ cc_library(
     srcs = ["map.cc"],
     hdrs = ["map.h"],
     deps = [
+        "@libgam//:graphics",
         "@libgam//:spritemap",
         "@libgam//:util",
     ],
@@ -89,7 +90,19 @@ cc_library(
     srcs = ["level.cc"],
     hdrs = ["level.h"],
     deps = [
+        "@libgam//:graphics",
         ":map",
+        ":player",
+    ],
+)
+
+cc_library(
+    name = "player",
+    srcs = ["player.cc"],
+    hdrs = ["player.h"],
+    deps = [
+        "@libgam//:graphics",
+        "@libgam//:spritemap",
     ],
 )
 

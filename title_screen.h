@@ -1,8 +1,6 @@
 #pragma once
 
 #include "backdrop.h"
-#include "graphics.h"
-#include "input.h"
 #include "screen.h"
 #include "text.h"
 
@@ -20,8 +18,9 @@ class TitleScreen : public Screen {
 
   private:
 
-    GameState gs_;
     Backdrop bg_;
     Text text_;
+
+    GameState gs_;
     int timer_;
 };

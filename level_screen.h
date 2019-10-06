@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "screen.h"
+#include "text.h"
 
 #include "game_state.h"
 #include "level.h"
@@ -23,8 +24,9 @@ class LevelScreen : public Screen {
 
     static constexpr int kFadeTime = 1000;
 
+    Text text_;
+
     GameState gs_;
     State state_;
     Level level_;
-    int fade_timer_;
 };
