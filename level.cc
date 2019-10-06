@@ -206,7 +206,7 @@ void Level::update(unsigned int elapsed) {
 }
 
 void Level::draw(Graphics& graphics) const {
-  map_.draw(graphics, 0, 0);
+  map_.draw(graphics);
   player.draw(graphics);
 
   for (const auto& p : pistons_) {
@@ -218,13 +218,17 @@ void Level::draw(Graphics& graphics) const {
   }
 }
 
-void Level::conveyors() {
-  if (player.moving()) return;
-
+Map::Tile Level::player_tile() const {
   const int px = player.map_x();
   const int py = player.map_y();
 
-  const auto tile = map_.tile(px, py);
+  return  map_.tile(px, py);
+}
+
+void Level::conveyors() {
+  if (player.moving()) return;
+
+  const auto tile = player_tile();
   if (tile.conveyor()) {
     player.convey(tile.dx(), tile.dy());
   }
@@ -268,5 +272,14 @@ bool Level::push_crate(int x, int y, int tx, int ty) {
       return true;
     }
   }
+  return false;
+}
+
+bool Level::player_oob() const {
+  if (player.map_x() < 0) return true;
+  if (player.map_x() >= map_.width()) return true;
+  if (player.map_y() < 0) return true;
+  if (player.map_y() >= map_.height()) return true;
+
   return false;
 }

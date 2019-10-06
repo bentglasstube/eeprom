@@ -21,6 +21,7 @@ class Map {
 
       bool solid() const;
       bool conveyor() const;
+      bool pit() const;
       double dx() const;
       double dy() const;
       int sprite(int timer) const;
@@ -28,7 +29,7 @@ class Map {
 
     Map();
 
-    void draw(Graphics& graphics, int xo, int yo) const;
+    void draw(Graphics& graphics) const;
     void update(unsigned int elapsed);
 
     Tile tile(int x, int y) const;
@@ -36,8 +37,8 @@ class Map {
     void set_size(int width, int height);
     void set_tile(int x, int y, TileType type);
 
-    int pixel_width() const;
-    int pixel_height() const;
+    int width() const;
+    int height() const;
 
   private:
 

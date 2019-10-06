@@ -21,6 +21,23 @@ bool Map::Tile::conveyor() const {
   }
 }
 
+bool Map::Tile::pit() const {
+  switch (type) {
+    case Map::TileType::HoleNW:
+    case Map::TileType::HoleN:
+    case Map::TileType::HoleNE:
+    case Map::TileType::HoleW:
+    case Map::TileType::HoleMid:
+    case Map::TileType::HoleE:
+    case Map::TileType::HoleSW:
+    case Map::TileType::HoleS:
+    case Map::TileType::HoleSE:
+      return true;
+    default:
+      return false;
+  }
+}
+
 double Map::Tile::dx() const {
   switch (type) {
     case Map::TileType::ConveyorW:
@@ -43,16 +60,16 @@ double Map::Tile::dy() const {
   }
 }
 
-void Map::draw(Graphics& graphics, int xo, int yo) const {
+void Map::draw(Graphics& graphics) const {
   const int frame = timer_ / kFrameLength;
 
   for (int y = 0; y < height_; ++y) {
-    const int gy = kTileSize * y - yo;
+    const int gy = kTileSize * y;
     if (gy < -kTileSize) continue;
     if (gy > graphics.height()) break;
 
     for (int x = 0; x < width_; ++x) {
-      const int gx = kTileSize * x - xo;
+      const int gx = kTileSize * x;
       if (gx < -kTileSize) continue;
       if (gx > graphics.width()) break;
 
@@ -97,14 +114,6 @@ void Map::set_tile(int x, int y, TileType type) {
   if (x < 0 || x > kMaxWidth) return;
 
   tiles_[y][x] = type;
-}
-
-int Map::pixel_width() const {
-  return width_ * kTileSize;
-}
-
-int Map::pixel_height() const {
-  return height_ * kTileSize;
 }
 
 int Map::Tile::sprite(int frame) const {
@@ -154,4 +163,12 @@ int Map::Tile::sprite(int frame) const {
 
     default: return 0;
   }
+}
+
+int Map::width() const {
+  return width_;
+}
+
+int Map::height() const {
+  return height_;
 }

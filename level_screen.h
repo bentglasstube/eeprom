@@ -38,6 +38,7 @@ class LevelScreen : public Screen {
     double fade_amount() const;
     bool step_complete() const;
     bool robot_dead() const;
+    bool robot_left() const;
 
     void set_choice(int choice);
 };

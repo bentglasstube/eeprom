@@ -75,14 +75,13 @@ bool LevelScreen::update(const Input& input, Audio& audio, unsigned int elapsed)
         if (robot_dead()) {
           state_ = State::Death;
           timer_ = 0;
+        } else if (robot_left()) {
+          state_ = State::Outro;
+          timer_ = 0;
+        } else {
+          level_.step_pistons();
+          level_.conveyors();
         }
-
-        level_.step_pistons();
-      }
-
-      if (step_complete()) {
-        level_.conveyors();
-        // TODO exexute instruction
       }
 
       level_.update(elapsed);
@@ -196,7 +195,12 @@ bool LevelScreen::step_complete() const {
 }
 
 bool LevelScreen::robot_dead() const {
-  // TODO check for pits
-  // TODO check for double pistons
+  const auto tile = level_.player_tile();
+  return tile.pit();
+}
+
+bool LevelScreen::robot_left() const {
+  if (level_.player.moving()) return false;
+  if (level_.player_oob()) return true;
   return false;
 }
