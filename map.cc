@@ -3,6 +3,49 @@
 #include <cmath>
 #include <cassert>
 
+Map::TileType Map::tile_from_sprite(int sprite) {
+  switch (sprite) {
+    case 1:     return TileType::Open;
+    case 2:     return TileType::Block;
+
+    case 13:    return TileType::DoorN;
+    case 14:    return TileType::DoorS;
+    case 15:    return TileType::DoorW;
+    case 16:    return TileType::DoorE;
+
+    case 17:    return TileType::ConveyorE;
+    case 25:    return TileType::ConveyorW;
+    case 33:    return TileType::ConveyorS;
+    case 41:    return TileType::ConveyorN;
+
+    case 81:    return TileType::WallSE;
+    case 82:    return TileType::WallS;
+    case 83:    return TileType::WallSW;
+    case 89:    return TileType::WallE;
+    case 90:    return TileType::WallTop;
+    case 91:    return TileType::WallW;
+    case 97:    return TileType::WallNE;
+    case 98:    return TileType::WallN;
+    case 99:    return TileType::WallNW;
+    case 84:    return TileType::WallInnerNW;
+    case 85:    return TileType::WallInnerNE;
+    case 92:    return TileType::WallInnerSW;
+    case 93:    return TileType::WallInnerSE;
+
+    case 86:    return TileType::HoleSE;
+    case 87:    return TileType::HoleS;
+    case 88:    return TileType::HoleSW;
+    case 94:    return TileType::HoleE;
+    case 95:    return TileType::HoleMid;
+    case 96:    return TileType::HoleW;
+    case 102:   return TileType::HoleNE;
+    case 103:   return TileType::HoleN;
+    case 104:   return TileType::HoleNW;
+
+    default:    return TileType::Open;
+  }
+}
+
 Map::Map() : tileset_("tiles.png", 8, kTileSize, kTileSize), width_(0), height_(0), timer_(0) {}
 
 bool Map::Tile::solid() const {
@@ -171,20 +214,4 @@ int Map::width() const {
 
 int Map::height() const {
   return height_;
-}
-
-void Map::populate(std::vector<TileType> tiles) {
-  int x = 0, y = 0;
-
-  for (auto t : tiles) {
-    set_tile(x, y, t);
-    ++x;
-
-    if (x >= width_) {
-      x = 0;
-      ++y;
-    }
-
-    if (y >= height_) return;
-  }
 }

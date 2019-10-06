@@ -5,193 +5,34 @@
 Level::Level() : player(), map_() {
   map_.set_size(12, 14);
 
-  map_.populate({
-      Map::TileType::WallInnerNW,
-      Map::TileType::WallN,
-      Map::TileType::WallN,
-      Map::TileType::WallNW,
-      Map::TileType::DoorN,
-      Map::TileType::WallNE,
-      Map::TileType::WallN,
-      Map::TileType::WallN,
-      Map::TileType::WallN,
-      Map::TileType::WallN,
-      Map::TileType::WallN,
-      Map::TileType::WallInnerNE,
+}
 
-      Map::TileType::WallW,
-      Map::TileType::Box,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::ConveyorS,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::Box,
-      Map::TileType::Box,
-      Map::TileType::Box,
-      Map::TileType::WallE,
+void Level::load(int level) {
+  pistons_.clear();
+  crates_.clear();
 
-      Map::TileType::WallW,
-      Map::TileType::Box,
-      Map::TileType::Box,
-      Map::TileType::Open,
-      Map::TileType::ConveyorS,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::WallE,
+  switch (level) {
+    case 1:
+      populate({
+        84,98,98,99,13,97,98,98,98,98,98,85,
+        91,3,1,1,33,1,1,1,3,3,3,89,
+        91,3,3,1,33,1,1,1,1,1,1,89,
+        91,3,3,1,33,1,1,1,1,1,1,97,
+        91,1,1,9,33,17,17,17,17,17,17,17,
+        91,1,1,1,33,1,1,1,1,1,1,81,
+        91,1,1,1,33,1,1,2,2,1,1,89,
+        91,1,1,1,33,1,1,2,2,1,1,89,
+        91,1,1,1,33,1,1,1,1,1,1,89,
+        91,1,1,1,33,1,1,81,82,82,82,93,
+        91,86,87,87,87,87,88,89,90,90,90,90,
+        91,94,95,95,95,95,96,89,90,90,90,90,
+        91,102,103,103,103,103,104,89,90,90,90,90,
+        92,82,82,82,82,82,82,93,90,90,90,90
+      });
 
-      Map::TileType::WallW,
-      Map::TileType::Box,
-      Map::TileType::Box,
-      Map::TileType::Open,
-      Map::TileType::ConveyorS,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::WallNE,
-
-      Map::TileType::WallW,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::PusherE,
-      Map::TileType::ConveyorS,
-      Map::TileType::ConveyorE,
-      Map::TileType::ConveyorE,
-      Map::TileType::ConveyorE,
-      Map::TileType::ConveyorE,
-      Map::TileType::ConveyorE,
-      Map::TileType::ConveyorE,
-      Map::TileType::ConveyorE,
-
-      Map::TileType::WallW,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::ConveyorS,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::WallSE,
-
-      Map::TileType::WallW,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::ConveyorS,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::WallE,
-
-      Map::TileType::WallW,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::ConveyorS,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::Block,
-      Map::TileType::Block,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::WallE,
-
-      Map::TileType::WallW,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::ConveyorS,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::Block,
-      Map::TileType::Block,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::WallE,
-
-      Map::TileType::WallW,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::ConveyorS,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::Open,
-      Map::TileType::WallE,
-
-      Map::TileType::WallW,
-      Map::TileType::HoleSE,
-      Map::TileType::HoleS,
-      Map::TileType::HoleS,
-      Map::TileType::HoleS,
-      Map::TileType::HoleS,
-      Map::TileType::HoleS,
-      Map::TileType::HoleSW,
-      Map::TileType::WallSE,
-      Map::TileType::WallS,
-      Map::TileType::WallS,
-      Map::TileType::WallInnerSE,
-
-      Map::TileType::WallW,
-      Map::TileType::HoleE,
-      Map::TileType::HoleMid,
-      Map::TileType::HoleMid,
-      Map::TileType::HoleMid,
-      Map::TileType::HoleMid,
-      Map::TileType::HoleMid,
-      Map::TileType::HoleW,
-      Map::TileType::WallE,
-      Map::TileType::WallTop,
-      Map::TileType::WallTop,
-      Map::TileType::WallTop,
-
-      Map::TileType::WallW,
-      Map::TileType::HoleNE,
-      Map::TileType::HoleN,
-      Map::TileType::HoleN,
-      Map::TileType::HoleN,
-      Map::TileType::HoleN,
-      Map::TileType::HoleN,
-      Map::TileType::HoleNW,
-      Map::TileType::WallE,
-      Map::TileType::WallTop,
-      Map::TileType::WallTop,
-      Map::TileType::WallTop,
-
-      Map::TileType::WallInnerSW,
-      Map::TileType::WallS,
-      Map::TileType::WallS,
-      Map::TileType::WallS,
-      Map::TileType::WallS,
-      Map::TileType::WallS,
-      Map::TileType::WallS,
-      Map::TileType::WallS,
-      Map::TileType::WallInnerSE,
-      Map::TileType::WallTop,
-      Map::TileType::WallTop,
-      Map::TileType::WallTop
-  });
-
-  player.set_position(4, 1, Player::Facing::S);
-
-  pistons_.emplace_back(3, 4, Piston::Facing::E, 4, 4);
+      player.set_position(4, 1, Player::Facing::S);
+      pistons_.emplace_back(3, 4, Piston::Facing::E, 4);
+  }
 }
 
 void Level::update(unsigned int elapsed) {
@@ -284,4 +125,20 @@ bool Level::player_oob() const {
   if (player.map_y() >= map_.height()) return true;
 
   return false;
+}
+
+void Level::populate(std::vector<int> tiles) {
+  int x = 0, y = 0;
+
+  for (auto t : tiles) {
+    map_.set_tile(x, y, Map::tile_from_sprite(t));
+
+    if (t == 3) crates_.emplace_back(x * 16, y * 16);
+
+    if (++x >= map_.width()) {
+      x = 0;
+      ++y;
+    }
+    if (y >= map_.height()) return;
+  }
 }

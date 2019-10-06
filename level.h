@@ -14,6 +14,8 @@ class Level {
 
     Level();
 
+    void load(int level);
+
     void update(unsigned int elapsed);
     void draw(Graphics &graphics) const;
 
@@ -31,4 +33,6 @@ class Level {
 
     bool push_player(int x, int y, int tx, int ty);
     bool push_crate(int x, int y, int tx, int ty);
+
+    void populate(std::vector<int> tiles);
 };

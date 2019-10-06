@@ -5,7 +5,9 @@ LevelScreen::LevelScreen(GameState state) :
   box_("box.png", 8),
   gs_(state), state_(State::Intro), level_(),
   timer_(0), choice_(0)
-{}
+{
+  level_.load(gs_.level());
+}
 
 bool LevelScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
 

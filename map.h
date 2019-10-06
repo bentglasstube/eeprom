@@ -29,6 +29,8 @@ class Map {
       int sprite(int timer) const;
     };
 
+    static TileType tile_from_sprite(int sprite);
+
     Map();
 
     void draw(Graphics& graphics) const;
@@ -42,7 +44,7 @@ class Map {
     int width() const;
     int height() const;
 
-    void populate(std::vector<TileType> tiles);
+    void populate(std::vector<int> tiles);
 
   private:
 
