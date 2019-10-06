@@ -95,8 +95,10 @@ cc_library(
     hdrs = ["level.h"],
     deps = [
         "@libgam//:graphics",
+        ":crate",
         ":map",
         ":player",
+        ":piston",
     ],
 )
 
@@ -116,6 +118,26 @@ cc_library(
     hdrs = ["box.h"],
     deps = [
         "@libgam//:graphics",
+    ],
+)
+
+cc_library(
+    name = "piston",
+    srcs = ["piston.cc"],
+    hdrs = ["piston.h"],
+    deps = [
+        "@libgam//:graphics",
+        "@libgam//:spritemap",
+    ],
+)
+
+cc_library(
+    name = "crate",
+    srcs = ["crate.cc"],
+    hdrs = ["crate.h"],
+    deps = [
+        "@libgam//:graphics",
+        "@libgam//:spritemap",
     ],
 )
 

@@ -191,11 +191,27 @@ Level::Level() : player(), map_() {
 void Level::update(unsigned int elapsed) {
   map_.update(elapsed);
   player.update(elapsed);
+
+  for (auto& p : pistons_) {
+    p.update(elapsed);
+  }
+
+  for (auto& c : crates_) {
+    c.update(elapsed);
+  }
 }
 
 void Level::draw(Graphics& graphics) const {
   map_.draw(graphics, 0, 0);
   player.draw(graphics);
+
+  for (const auto& p : pistons_) {
+    p.draw(graphics);
+  }
+
+  for (const auto& c : crates_) {
+    c.draw(graphics);
+  }
 }
 
 void Level::conveyors() {
@@ -208,3 +224,12 @@ void Level::conveyors() {
   }
 }
 
+bool Level::step_pistons() {
+  for (auto& p : pistons_) {
+    if (p.step()) {
+      // TODO see if something was pushed
+    }
+  }
+
+  return false;
+}
