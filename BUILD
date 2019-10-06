@@ -73,6 +73,9 @@ cc_library(
     name = "game_state",
     srcs = ["game_state.cc"],
     hdrs = ["game_state.h"],
+    deps = [
+        ":player",
+    ]
 )
 
 cc_library(

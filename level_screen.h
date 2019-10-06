@@ -12,7 +12,7 @@
 class LevelScreen : public Screen {
   public:
 
-    enum class State { Intro, Input, Execution, Death, Outro };
+    enum class State { Intro, Input, Execution, Death, Reset, Outro };
 
     LevelScreen(GameState state);
 
@@ -24,6 +24,7 @@ class LevelScreen : public Screen {
   private:
 
     static constexpr int kFadeTime = 1000;
+    static constexpr int kBlinkTime = 250;
 
     Text text_;
     Box box_;
@@ -31,4 +32,9 @@ class LevelScreen : public Screen {
     GameState gs_;
     State state_;
     Level level_;
+
+    int timer_, choice_;
+
+    double fade_amount() const;
+    void set_choice(int choice);
 };

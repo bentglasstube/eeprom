@@ -1,6 +1,6 @@
 #include "level.h"
 
-Level::Level() : map_(), player_() {
+Level::Level() : map_(), player() {
   map_.set_size(12, 14);
 
   map_.set_tile( 0,  0, Map::TileType::WallInnerNW);
@@ -185,22 +185,7 @@ Level::Level() : map_(), player_() {
   map_.set_tile(10, 13, Map::TileType::WallTop);
   map_.set_tile(11, 13, Map::TileType::WallTop);
 
-  player_.set_position(4, 1, Player::Facing::S);
-
-  player_.add_instruction(Player::Instruction::NOP);
-  player_.add_instruction(Player::Instruction::MOV);
-  player_.add_instruction(Player::Instruction::SHL);
-  player_.add_instruction(Player::Instruction::MOV);
-  player_.add_instruction(Player::Instruction::SHR);
-  player_.add_instruction(Player::Instruction::MOV);
-  player_.add_instruction(Player::Instruction::MOV);
-  player_.add_instruction(Player::Instruction::MOV);
-  player_.add_instruction(Player::Instruction::NOP);
-  player_.add_instruction(Player::Instruction::SHL);
-  player_.add_instruction(Player::Instruction::MOV);
-  player_.add_instruction(Player::Instruction::SHR);
-  player_.add_instruction(Player::Instruction::MOV);
-  player_.add_instruction(Player::Instruction::MOV);
+  player.set_position(4, 1, Player::Facing::S);
 }
 
 void Level::update(unsigned int elapsed) {
@@ -209,9 +194,5 @@ void Level::update(unsigned int elapsed) {
 
 void Level::draw(Graphics& graphics) const {
   map_.draw(graphics, 0, 0);
-  player_.draw(graphics);
-}
-
-Player const & Level::player() const {
-  return player_;
+  player.draw(graphics);
 }
