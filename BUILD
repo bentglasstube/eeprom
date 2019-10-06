@@ -109,6 +109,7 @@ cc_library(
     deps = [
         "@libgam//:graphics",
         "@libgam//:spritemap",
+        ":map",
     ],
 )
 

@@ -81,6 +81,7 @@ bool LevelScreen::update(const Input& input, Audio& audio, unsigned int elapsed)
         } else {
           level_.step_pistons();
           level_.conveyors();
+          level_.run_program();
         }
       }
 

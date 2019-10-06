@@ -101,7 +101,7 @@ void Level::conveyors() {
 
   const auto tile = player_tile();
   if (tile.conveyor()) {
-    player.convey(tile.dx(), tile.dy());
+    player.convey(tile.dx(), tile.dy(), map_);
   }
 }
 
@@ -126,8 +126,7 @@ bool Level::push_player(int x, int y, int tx, int ty) {
 
   if (player.map_x() == x && player.map_y() == y) {
     std::cerr << "Player is present, shove!" << std::endl;
-    player.push(tx, ty);
-    // TODO check if map is solid
+    player.push(tx, ty, map_);
     return true;
   } else {
     std::cerr << "Player is not present" << std::endl;
@@ -169,4 +168,8 @@ void Level::populate(std::vector<int> tiles) {
     }
     if (y >= map_.height()) return;
   }
+}
+
+void Level::run_program() {
+  player.execute(map_);
 }

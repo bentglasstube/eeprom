@@ -49,7 +49,7 @@ Map::TileType Map::tile_from_sprite(int sprite) {
 Map::Map() : tileset_("tiles.png", 8, kTileSize, kTileSize), width_(0), height_(0), timer_(0) {}
 
 bool Map::Tile::solid() const {
-  return false;
+  return !(pit() || conveyor() || type == Map::TileType::Open);
 }
 
 bool Map::Tile::conveyor() const {

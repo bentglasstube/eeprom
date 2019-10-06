@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "graphics.h"
+#include "map.h"
 #include "spritemap.h"
 
 class Player {
@@ -28,8 +29,9 @@ class Player {
     void draw(Graphics& graphics) const;
 
     bool moving() const;
-    void convey(int dx, int dy);
-    void push(int dx, int dy);
+    void convey(int dx, int dy, const Map& map);
+    void push(int dx, int dy, const Map& map);
+    void execute(const Map& map);
 
     int map_x() const;
     int map_y() const;
@@ -52,6 +54,8 @@ class Player {
     size_t counter_;
 
     int frame() const;
-    void set_target(int tx, int ty, double speed);
+    void set_target(int tx, int ty, double speed, const Map& map);
 
+    void walk(const Map& map);
+    void rotate(bool clockwise);
 };

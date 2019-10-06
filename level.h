@@ -21,6 +21,7 @@ class Level {
 
     void conveyors();
     bool step_pistons();
+    void run_program();
 
     Map::Tile player_tile() const;
     bool player_oob() const;
