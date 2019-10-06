@@ -15,6 +15,7 @@ class Map {
       WallNW, WallN, WallNE, WallW, WallTop, WallE, WallSW, WallS, WallSE,
       WallInnerNW, WallInnerNE, WallInnerSW, WallInnerSE,
       HoleNW, HoleN, HoleNE, HoleW, HoleMid, HoleE, HoleSW, HoleS, HoleSE,
+      OutOfBounds,
     };
 
     struct Tile {

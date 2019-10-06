@@ -49,7 +49,12 @@ Map::TileType Map::tile_from_sprite(int sprite) {
 Map::Map() : tileset_("tiles.png", 8, kTileSize, kTileSize), width_(0), height_(0), timer_(0) {}
 
 bool Map::Tile::solid() const {
-  return !(pit() || conveyor() || type == Map::TileType::Open);
+  if (pit()) return false;
+  if (conveyor()) return false;
+  if (type == TileType::Open) return false;
+  if (type == TileType::OutOfBounds) return false;
+
+  return true;
 }
 
 bool Map::Tile::conveyor() const {
@@ -131,7 +136,7 @@ Map::Tile Map::tile(int x, int y) const {
   Tile tile;
 
   if (x < 0 || x >= width_ || y < 0 || y >= height_) {
-    tile.type = TileType::Block;
+    tile.type = TileType::OutOfBounds;
   } else {
     tile.type = tiles_[y][x];
   }

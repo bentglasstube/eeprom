@@ -15,7 +15,7 @@ std::string Player::instruction_text(Player::Instruction op) {
 }
 
 Player::Player() :
-  sprites_("robots.png", 3, kTileSize, kTileSize),
+  sprites_("robots.png", 4, kTileSize, kTileSize),
   x_(0), y_(0), v_(0), tx_(0), ty_(0), timer_(0),
   facing_(Facing::S), animate_(false),
   program_(), counter_(0) {}
@@ -33,10 +33,12 @@ void Player::add_instruction(Player::Instruction op) {
 
 void Player::remove_instruction() {
   program_.pop_back();
+  counter_ = 0;
 }
 
 void Player::clear_program() {
   program_.clear();
+  counter_ = 0;
 }
 
 std::vector<Player::Instruction> const& Player::listing() const {
@@ -118,8 +120,10 @@ int Player::map_y() const {
 }
 
 int Player::frame() const {
-  const int base = static_cast<int>(facing_) * 3;
-  const int anim = (timer_ > 3 * kAnimationSpeed) ? 1 : (kAnimationSpeed / 3);
+  const int base = static_cast<int>(facing_) * 4;
+  const int anim = timer_ / kAnimationSpeed;
+  const int frame = base + (animate_ ? anim : 0);
+
   return base + (animate_ ? anim : 0);
 }
 
@@ -128,7 +132,7 @@ void Player::set_target(int tx, int ty, double speed, const Map& map) {
   const int my = ty / 16;
 
   if (map.tile(mx, my).solid()) {
-    // TODO crush robot
+    // TODO crush robot if going fast;
     return;
   }
 
@@ -153,6 +157,7 @@ void Player::walk(const Map& map) {
       break;
   }
   animate_ = true;
+  timer_ = 0;
 }
 
 void Player::rotate(bool clockwise) {
