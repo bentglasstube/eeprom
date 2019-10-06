@@ -5,6 +5,7 @@
 #include "screen.h"
 #include "text.h"
 
+#include "box.h"
 #include "game_state.h"
 #include "level.h"
 
@@ -25,6 +26,7 @@ class LevelScreen : public Screen {
     static constexpr int kFadeTime = 1000;
 
     Text text_;
+    Box box_;
 
     GameState gs_;
     State state_;

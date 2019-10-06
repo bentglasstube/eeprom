@@ -22,7 +22,7 @@ class Player {
     void clear_program();
 
     std::vector<Instruction> const& listing() const;
-    int counter() const;
+    size_t counter() const;
 
     void draw(Graphics& graphics) const;
 
@@ -36,6 +36,6 @@ class Player {
     Facing facing_;
 
     std::vector<Instruction> program_;
-    int counter_;
+    size_t counter_;
 
 };

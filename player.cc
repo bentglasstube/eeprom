@@ -38,7 +38,7 @@ std::vector<Player::Instruction> const& Player::listing() const {
   return program_;
 }
 
-int Player::counter() const {
+size_t Player::counter() const {
   return counter_;
 }
 

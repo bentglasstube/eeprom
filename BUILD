@@ -63,6 +63,7 @@ cc_library(
         "@libgam//:backdrop",
         "@libgam//:screen",
         "@libgam//:text",
+        ":box",
         ":game_state",
         ":level",
     ],
@@ -103,6 +104,15 @@ cc_library(
     deps = [
         "@libgam//:graphics",
         "@libgam//:spritemap",
+    ],
+)
+
+cc_library(
+    name = "box",
+    srcs = ["box.cc"],
+    hdrs = ["box.h"],
+    deps = [
+        "@libgam//:graphics",
     ],
 )
 
