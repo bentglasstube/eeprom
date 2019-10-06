@@ -2,6 +2,8 @@
 
 #include "spritemap.h"
 
+#include <vector>
+
 class Map {
   public:
 
@@ -39,6 +41,8 @@ class Map {
 
     int width() const;
     int height() const;
+
+    void populate(std::vector<TileType> tiles);
 
   private:
 

@@ -172,3 +172,19 @@ int Map::width() const {
 int Map::height() const {
   return height_;
 }
+
+void Map::populate(std::vector<TileType> tiles) {
+  int x = 0, y = 0;
+
+  for (auto t : tiles) {
+    set_tile(x, y, t);
+    ++x;
+
+    if (x >= width_) {
+      x = 0;
+      ++y;
+    }
+
+    if (y >= height_) return;
+  }
+}
