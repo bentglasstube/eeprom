@@ -77,7 +77,7 @@ bool LevelScreen::update(const Input& input, Audio& audio, unsigned int elapsed)
           timer_ = 0;
         }
 
-        pistons();
+        level_.step_pistons();
       }
 
       if (step_complete()) {
@@ -199,9 +199,4 @@ bool LevelScreen::robot_dead() const {
   // TODO check for pits
   // TODO check for double pistons
   return false;
-}
-
-void LevelScreen::pistons() {
-  // TODO decrement piston timers
-  // TODO push player if needed
 }

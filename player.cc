@@ -1,6 +1,7 @@
 #include "player.h"
 
 #include <cmath>
+#include <iostream>
 
 std::string Player::instruction_text(Player::Instruction op) {
   switch (op) {
@@ -75,11 +76,17 @@ bool Player::moving() const {
 }
 
 void Player::convey(int dx, int dy) {
-  set_target(x_ + dx, y_ + dy, kWalkSpeed);
+  if (moving()) {
+    std::cerr << "Player already moving, not conveying" << std::endl;
+    return;
+  } else {
+    std::cerr << "Robot still, conveying" << std::endl;
+    set_target(x_ + dx * kTileSize, y_ + dy * kTileSize, kWalkSpeed);
+  }
 }
 
-void Player::push(int dx, int dy) {
-  set_target(x_ + dx, y_ + dy, kShoveSpeed);
+void Player::push(int tx, int ty) {
+  set_target(tx * kTileSize, ty * kTileSize, kShoveSpeed);
 }
 
 int Player::map_x() const {
@@ -97,6 +104,8 @@ int Player::frame() const {
 }
 
 void Player::set_target(int tx, int ty, double speed) {
+  std::cerr << "Player moving to " << tx << ", " << ty << " at speed " << speed << std::endl;
+
   tx_ = tx;
   ty_ = ty;
   v_ = speed;

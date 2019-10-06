@@ -1,8 +1,8 @@
 #include "piston.h"
 
 Piston::Piston(int x, int y, Facing facing, int freq, int first) :
-  tileset_("tiles.png", 8, 16, 16),
-  x_(x), y_(y), freq_(freq), counter_(first),
+  tileset_("tiles.png", 8, kTileSize, kTileSize),
+  x_(x * kTileSize), y_(y * kTileSize), freq_(freq), counter_(first),
   timer_(0), frame_(0),
   facing_(facing), state_(State::Dormant)
 {}
@@ -69,5 +69,35 @@ bool Piston::step() {
     return true;
   } else {
     return false;
+  }
+}
+
+std::pair<int, int> Piston::push_from() const {
+  return std::make_pair(x_ / kTileSize + xdiff(), y_ / kTileSize + ydiff());
+}
+
+std::pair<int, int> Piston::push_to() const {
+  return std::make_pair(x_ / kTileSize + 2 * xdiff(), y_ / kTileSize + 2 * ydiff());
+}
+
+int Piston::xdiff() const {
+  switch (facing_) {
+    case Facing::W:
+      return -1;
+    case Facing::E:
+      return +1;
+    default:
+      return 0;
+  }
+}
+
+int Piston::ydiff() const {
+  switch (facing_) {
+    case Facing::N:
+      return -1;
+    case Facing::S:
+      return +1;
+    default:
+      return 0;
   }
 }

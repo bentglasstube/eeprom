@@ -26,4 +26,6 @@ class Level {
     std::vector<Piston> pistons_;
     std::vector<Crate> crates_;
 
+    bool push_player(int x, int y, int tx, int ty);
+    bool push_crate(int x, int y, int tx, int ty);
 };

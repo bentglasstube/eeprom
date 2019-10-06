@@ -12,8 +12,12 @@ class Crate {
 
     void push(int tx, int ty);
 
+    int map_x() const;
+    int map_y() const;
+
   private:
 
+    static constexpr int kTileSize = 16;
     static constexpr double kPushSpeed = 0.01;
 
     SpriteMap tileset_;

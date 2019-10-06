@@ -1,5 +1,7 @@
 #include "level.h"
 
+#include <iostream>
+
 Level::Level() : player(), map_() {
   map_.set_size(12, 14);
 
@@ -186,6 +188,8 @@ Level::Level() : player(), map_() {
   map_.set_tile(11, 13, Map::TileType::WallTop);
 
   player.set_position(4, 1, Player::Facing::S);
+
+  pistons_.emplace_back(3, 4, Piston::Facing::E, 4, 4);
 }
 
 void Level::update(unsigned int elapsed) {
@@ -215,6 +219,8 @@ void Level::draw(Graphics& graphics) const {
 }
 
 void Level::conveyors() {
+  if (player.moving()) return;
+
   const int px = player.map_x();
   const int py = player.map_y();
 
@@ -228,8 +234,39 @@ bool Level::step_pistons() {
   for (auto& p : pistons_) {
     if (p.step()) {
       // TODO see if something was pushed
+      const auto from = p.push_from();
+      const auto to = p.push_to();
+
+      if (push_player(from.first, from.second, to.first, to.second)) {
+      }
     }
   }
 
+  return false;
+}
+
+bool Level::push_player(int x, int y, int tx, int ty) {
+  std::cerr << "Trying to push player" << std::endl;
+  std::cerr << "From " << x << ", " << y << " to " << tx << ", " << ty << std::endl;
+
+  if (player.map_x() == x && player.map_y() == y) {
+    std::cerr << "Player is present, shove!" << std::endl;
+    player.push(tx, ty);
+    // TODO check if map is solid
+    return true;
+  } else {
+    std::cerr << "Player is not present" << std::endl;
+    return false;
+  }
+}
+
+bool Level::push_crate(int x, int y, int tx, int ty) {
+  for (auto &c : crates_) {
+    if (c.map_x() == x && c.map_y() == y) {
+      c.push(tx, ty);
+      // TODO check if map is solid
+      return true;
+    }
+  }
   return false;
 }

@@ -15,8 +15,12 @@ class Piston {
     void draw(Graphics& graphics) const;
     bool step();
 
+    std::pair<int, int> push_from() const;
+    std::pair<int, int> push_to() const;
+
   private:
 
+    static constexpr int kTileSize = 16;
     static constexpr int kFrames = 8;
     static constexpr int kExtensionRate = 25;
     static constexpr int kRetractionRate = kExtensionRate * 4;
@@ -28,4 +32,6 @@ class Piston {
     Facing facing_;
     State state_;
 
+    int xdiff() const;
+    int ydiff() const;
 };

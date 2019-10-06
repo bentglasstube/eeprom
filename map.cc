@@ -23,9 +23,9 @@ bool Map::Tile::conveyor() const {
 
 double Map::Tile::dx() const {
   switch (type) {
-    case Map::TileType::ConveyorE:
-      return -1;
     case Map::TileType::ConveyorW:
+      return -1;
+    case Map::TileType::ConveyorE:
       return 1;
     default:
       return false;

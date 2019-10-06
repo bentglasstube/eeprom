@@ -40,7 +40,4 @@ class LevelScreen : public Screen {
     bool robot_dead() const;
 
     void set_choice(int choice);
-
-    void pistons();
-    void conveyors();
 };
