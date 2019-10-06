@@ -1,5 +1,7 @@
 #include "title_screen.h"
 
+#include "level_screen.h"
+
 TitleScreen::TitleScreen(GameState state) :
   gs_(state), bg_("title.png"), text_("text.png"), timer_(0) {}
 
@@ -19,5 +21,6 @@ void TitleScreen::draw(Graphics& graphics) const {
 }
 
 Screen* TitleScreen::next_screen() const {
-  return nullptr;
+  LevelScreen* s = new LevelScreen(gs_);
+  return s;
 }

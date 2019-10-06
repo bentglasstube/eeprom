@@ -53,16 +53,18 @@ cc_library(
     name = "screens",
     srcs = [
         "title_screen.cc",
+        "level_screen.cc",
     ],
     hdrs = [
         "title_screen.h",
+        "level_screen.h",
     ],
     deps = [
         "@libgam//:backdrop",
         "@libgam//:screen",
         "@libgam//:text",
         ":game_state",
-        ":map",
+        ":level",
     ],
 )
 
@@ -79,6 +81,15 @@ cc_library(
     deps = [
         "@libgam//:spritemap",
         "@libgam//:util",
+    ],
+)
+
+cc_library(
+    name = "level",
+    srcs = ["level.cc"],
+    hdrs = ["level.h"],
+    deps = [
+        ":map",
     ],
 )
 

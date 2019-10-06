@@ -2,8 +2,6 @@
 
 #include "spritemap.h"
 
-#include "rect.h"
-
 class Map {
   public:
 
@@ -22,7 +20,7 @@ class Map {
       int top, left, right, bottom;
 
       bool solid() const;
-      int sprite() const;
+      int sprite(int timer) const;
     };
 
     Map();
@@ -43,10 +41,12 @@ class Map {
     static constexpr int kTileSize = 16;
     static constexpr int kMaxWidth = 16;
     static constexpr int kMaxHeight = 16;
+    static constexpr int kAnimationFrames = 8;
+    static constexpr int kFrameLength = 100;
     static constexpr Tile kNullTile = {};
 
     SpriteMap tileset_;
-    int width_, height_;
+    int width_, height_, timer_;
     TileType tiles_[kMaxHeight][kMaxWidth];
 
     int tile_sprite(const Tile& t) const;

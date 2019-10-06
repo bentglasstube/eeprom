@@ -1,10 +1,13 @@
 #include "map.h"
 
 #include <cmath>
+#include <cassert>
 
-Map::Map() : tileset_("tiles.png", 8, kTileSize, kTileSize), width_(0), height_(0) {}
+Map::Map() : tileset_("tiles.png", 8, kTileSize, kTileSize), width_(0), height_(0), timer_(0) {}
 
 void Map::draw(Graphics& graphics, int xo, int yo) const {
+  const int frame = timer_ / kFrameLength;
+
   for (int y = 0; y < height_; ++y) {
     const int gy = kTileSize * y - yo;
     if (gy < -kTileSize) continue;
@@ -15,13 +18,15 @@ void Map::draw(Graphics& graphics, int xo, int yo) const {
       if (gx < -kTileSize) continue;
       if (gx > graphics.width()) break;
 
-      tileset_.draw(graphics, itile(x, y).sprite(), gx, gy);
+      const int s = tile(x, y).sprite(frame);
+      tileset_.draw(graphics, s > 80 ? 4 + (frame / 2) : 0, gx, gy);
+      tileset_.draw(graphics, s, gx, gy);
     }
   }
 }
 
 void Map::update(unsigned int elapsed) {
-  timer_ += elapsed;
+  timer_ = (timer_ + elapsed) % (kAnimationFrames * kFrameLength);
 }
 
 Map::Tile Map::tile(int x, int y) const {
@@ -64,26 +69,26 @@ int Map::pixel_height() const {
   return height_ * kTileSize;
 }
 
-int Map::Tile::sprite() const {
+int Map::Tile::sprite(int frame) const {
   switch (type) {
     case Map::TileType::Open:           return 0;
     case Map::TileType::Block:          return 1;
     case Map::TileType::Box:            return 2;
 
-    case Map::TileType::PusherEast:     return 8;
-    case Map::TileType::PusherWest:     return 9;
-    case Map::TileType::PusherSouth:    return 10;
-    case Map::TileType::PusherNorth:    return 11;
+    case Map::TileType::PusherE:        return 8;
+    case Map::TileType::PusherW:        return 9;
+    case Map::TileType::PusherS:        return 10;
+    case Map::TileType::PusherN:        return 11;
 
-    case Map::TileType::DoorNorth:      return 12;
-    case Map::TileType::DoorSouth:      return 13;
-    case Map::TileType::DoorWest:       return 14;
-    case Map::TileType::DoorEast:       return 15;
+    case Map::TileType::DoorN:          return 12;
+    case Map::TileType::DoorS:          return 13;
+    case Map::TileType::DoorW:          return 14;
+    case Map::TileType::DoorE:          return 15;
 
-    case Map::TileType::ConveyEast:     return 16 + anim;
-    case Map::TileType::ConveyWest:     return 24 + anim;
-    case Map::TileType::ConveySouth:    return 32 + anim;
-    case Map::TileType::ConveyNorth:    return 40 + anim;
+    case Map::TileType::ConveyorE:      return 16 + frame;
+    case Map::TileType::ConveyorW:      return 24 + frame;
+    case Map::TileType::ConveyorS:      return 32 + frame;
+    case Map::TileType::ConveyorN:      return 40 + frame;
 
     case Map::TileType::WallSE:         return 80;
     case Map::TileType::WallS:          return 81;
@@ -103,7 +108,7 @@ int Map::Tile::sprite() const {
     case Map::TileType::HoleS:          return 86;
     case Map::TileType::HoleSW:         return 87;
     case Map::TileType::HoleE:          return 93;
-    case Map::TileType::HoleMiddle:     return 94;
+    case Map::TileType::HoleMid:        return 94;
     case Map::TileType::HoleW:          return 95;
     case Map::TileType::HoleNE:         return 101;
     case Map::TileType::HoleN:          return 102;
