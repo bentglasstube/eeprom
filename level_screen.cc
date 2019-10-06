@@ -3,11 +3,9 @@
 LevelScreen::LevelScreen(GameState state) :
   text_("tinytext.png", 6, 8),
   box_("box.png", 8),
-  gs_(state), state_(State::Intro), level_(),
+  gs_(state), state_(State::Reset), level_(),
   timer_(0), choice_(0)
-{
-  level_.load(gs_.level());
-}
+{}
 
 bool LevelScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
 
@@ -16,16 +14,16 @@ bool LevelScreen::update(const Input& input, Audio& audio, unsigned int elapsed)
   switch (state_) {
     case State::Intro:
 
+      // TODO show level name
+
       if (timer_ > kFadeTime) {
-        state_ = State::Input;
-        timer_ = 0;
+        transition(State::Input);
       }
 
       break;
 
     case State::Input:
 
-      // TODO handle input
       if (timer_ > kBlinkTime) timer_ -= kBlinkTime;
 
       if (input.key_pressed(Input::Button::Right)) set_choice(choice_ + 1);
@@ -35,7 +33,6 @@ bool LevelScreen::update(const Input& input, Audio& audio, unsigned int elapsed)
 
       if (input.key_pressed(Input::Button::Start) || input.key_pressed(Input::Button::A)) {
         switch (choice_) {
-          // TODO check if instructions are available
           case 0:
           case 1:
           case 2:
@@ -60,8 +57,7 @@ bool LevelScreen::update(const Input& input, Audio& audio, unsigned int elapsed)
             if (level_.player.listing().empty()) {
               // TODO error sound
             } else {
-              state_ = State::Execution;
-              timer_ = 0;
+              transition(State::Execution);
             }
             break;
         }
@@ -71,15 +67,17 @@ bool LevelScreen::update(const Input& input, Audio& audio, unsigned int elapsed)
 
     case State::Execution:
 
-      // TODO allow cancelling
+      if (input.key_pressed(Input::Button::A)) {
+        transition(State::Reset);
+      }
 
       if (step_complete()) {
         if (robot_dead()) {
-          state_ = State::Death;
-          timer_ = 0;
+          // TODO death sound
+          transition(State::Outro);
         } else if (robot_left()) {
-          state_ = State::Outro;
-          timer_ = 0;
+          gs_.next_level();
+          transition(State::Outro);
         } else {
           level_.step_pistons();
           level_.conveyors();
@@ -89,31 +87,25 @@ bool LevelScreen::update(const Input& input, Audio& audio, unsigned int elapsed)
       level_.update(elapsed);
       break;
 
-    case State::Death:
-
-      state_ = State::Reset;
-      break;
-
     case State::Reset:
 
-      if (timer_ > kFadeTime) {
-        // TODO reset level
-        state_ = State::Intro;
-        timer_ = 0;
-      }
+      reset();
       break;
 
     case State::Outro:
 
       if (timer_ > kFadeTime) {
-        // TODO load next level
-        state_ = State::Intro;
-        timer_ = 0;
+        reset();
       }
       break;
   }
 
   return true;
+}
+
+void LevelScreen::transition(LevelScreen::State state) {
+  state_ = state;
+  timer_ = 0;
 }
 
 void LevelScreen::draw(Graphics& graphics) const {
@@ -205,4 +197,11 @@ bool LevelScreen::robot_left() const {
   if (level_.player.moving()) return false;
   if (level_.player_oob()) return true;
   return false;
+}
+
+void LevelScreen::reset() {
+  choice_ = 0;
+  level_.player.clear_program();
+  level_.load(gs_.level());
+  transition(State::Intro);
 }

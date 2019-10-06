@@ -12,7 +12,7 @@
 class LevelScreen : public Screen {
   public:
 
-    enum class State { Intro, Input, Execution, Death, Reset, Outro };
+    enum class State { Intro, Input, Execution, Reset, Outro };
 
     LevelScreen(GameState state);
 
@@ -41,4 +41,6 @@ class LevelScreen : public Screen {
     bool robot_left() const;
 
     void set_choice(int choice);
+    void transition(State state);
+    void reset();
 };
