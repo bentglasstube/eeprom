@@ -17,6 +17,7 @@ void Piston::update(unsigned int elapsed) {
       if (timer_ > kExtensionRate) {
         timer_ -= kExtensionRate;
         if (frame_ == kFrames) {
+          --frame_;
           state_ = State::Retracting;
         } else {
           ++frame_;
@@ -42,22 +43,22 @@ void Piston::draw(Graphics& graphics) const {
   switch (facing_) {
     case Facing::E:
       tileset_.draw(graphics, 8, x_, y_);
-      tileset_.draw(graphics, 48, x_ + 12, y_);
+      tileset_.draw(graphics, 48 + frame_, x_ + 12, y_);
       break;
 
     case Facing::W:
       tileset_.draw(graphics, 9, x_, y_);
-      tileset_.draw(graphics, 56, x_ - 12, y_);
+      tileset_.draw(graphics, 56 + frame_, x_ - 12, y_);
       break;
 
     case Facing::S:
       tileset_.draw(graphics, 10, x_, y_);
-      tileset_.draw(graphics, 64, x_, y_ + 12);
+      tileset_.draw(graphics, 64 + frame_, x_, y_ + 12);
       break;
 
     case Facing::N:
       tileset_.draw(graphics, 11, x_, y_);
-      tileset_.draw(graphics, 72, x_, y_ - 12);
+      tileset_.draw(graphics, 72 + frame_, x_, y_ - 12);
       break;
   }
 }
