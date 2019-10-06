@@ -1,6 +1,6 @@
 #include "level.h"
 
-Level::Level() : map_(), player() {
+Level::Level() : player(), map_() {
   map_.set_size(12, 14);
 
   map_.set_tile( 0,  0, Map::TileType::WallInnerNW);
@@ -190,9 +190,21 @@ Level::Level() : map_(), player() {
 
 void Level::update(unsigned int elapsed) {
   map_.update(elapsed);
+  player.update(elapsed);
 }
 
 void Level::draw(Graphics& graphics) const {
   map_.draw(graphics, 0, 0);
   player.draw(graphics);
 }
+
+void Level::conveyors() {
+  const int px = player.map_x();
+  const int py = player.map_y();
+
+  const auto tile = map_.tile(px, py);
+  if (tile.conveyor()) {
+    player.convey(tile.dx(), tile.dy());
+  }
+}
+

@@ -5,6 +5,44 @@
 
 Map::Map() : tileset_("tiles.png", 8, kTileSize, kTileSize), width_(0), height_(0), timer_(0) {}
 
+bool Map::Tile::solid() const {
+  return false;
+}
+
+bool Map::Tile::conveyor() const {
+  switch (type) {
+    case Map::TileType::ConveyorN:
+    case Map::TileType::ConveyorE:
+    case Map::TileType::ConveyorS:
+    case Map::TileType::ConveyorW:
+      return true;
+    default:
+      return false;
+  }
+}
+
+double Map::Tile::dx() const {
+  switch (type) {
+    case Map::TileType::ConveyorE:
+      return -1;
+    case Map::TileType::ConveyorW:
+      return 1;
+    default:
+      return false;
+  }
+}
+
+double Map::Tile::dy() const {
+  switch (type) {
+    case Map::TileType::ConveyorN:
+      return -1;
+    case Map::TileType::ConveyorS:
+      return 1;
+    default:
+      return false;
+  }
+}
+
 void Map::draw(Graphics& graphics, int xo, int yo) const {
   const int frame = timer_ / kFrameLength;
 

@@ -24,18 +24,34 @@ class Player {
     std::vector<Instruction> const& listing() const;
     size_t counter() const;
 
+    void update(unsigned int elapsed);
     void draw(Graphics& graphics) const;
+
+    bool moving() const;
+    void convey(int dx, int dy);
+    void push(int dx, int dy);
+
+    int map_x() const;
+    int map_y() const;
 
   private:
 
     static constexpr int kTileSize = 16;
+    static constexpr int kAnimationSpeed = 240;
+    static constexpr double kWalkSpeed = 0.01;
+    static constexpr double kShoveSpeed = 0.1;
 
     SpriteMap sprites_;
 
-    int x_, y_;
+    double x_, y_, v_, tx_, ty_;
+    int timer_;
     Facing facing_;
+    bool animate_;
 
     std::vector<Instruction> program_;
     size_t counter_;
+
+    int frame() const;
+    void set_target(int tx, int ty, double speed);
 
 };

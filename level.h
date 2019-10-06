@@ -13,6 +13,8 @@ class Level {
     void update(unsigned int elapsed);
     void draw(Graphics &graphics) const;
 
+    void conveyors();
+
   private:
 
     Map map_;

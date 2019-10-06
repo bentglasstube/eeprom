@@ -70,10 +70,20 @@ bool LevelScreen::update(const Input& input, Audio& audio, unsigned int elapsed)
     case State::Execution:
 
       // TODO allow cancelling
-      // TODO update pistons
-      // TODO check for death
-      // TODO check conveyors
-      // TODO exexute instruction
+
+      if (step_complete()) {
+        if (robot_dead()) {
+          state_ = State::Death;
+          timer_ = 0;
+        }
+
+        pistons();
+      }
+
+      if (step_complete()) {
+        level_.conveyors();
+        // TODO exexute instruction
+      }
 
       level_.update(elapsed);
       break;
@@ -179,4 +189,19 @@ void LevelScreen::set_choice(int choice) {
   }
 
   choice_ = choice;
+}
+
+bool LevelScreen::step_complete() const {
+  return !level_.player.moving();
+}
+
+bool LevelScreen::robot_dead() const {
+  // TODO check for pits
+  // TODO check for double pistons
+  return false;
+}
+
+void LevelScreen::pistons() {
+  // TODO decrement piston timers
+  // TODO push player if needed
 }

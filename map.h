@@ -20,6 +20,9 @@ class Map {
       int top, left, right, bottom;
 
       bool solid() const;
+      bool conveyor() const;
+      double dx() const;
+      double dy() const;
       int sprite(int timer) const;
     };
 

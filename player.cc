@@ -1,5 +1,7 @@
 #include "player.h"
 
+#include <cmath>
+
 std::string Player::instruction_text(Player::Instruction op) {
   switch (op) {
     case Instruction::NOP: return "NOP";
@@ -12,12 +14,13 @@ std::string Player::instruction_text(Player::Instruction op) {
 
 Player::Player() :
   sprites_("robots.png", 3, kTileSize, kTileSize),
-  x_(0), y_(0), facing_(Facing::S),
+  x_(0), y_(0), v_(0), tx_(0), ty_(0), timer_(0),
+  facing_(Facing::S), animate_(false),
   program_(), counter_(0) {}
 
 void Player::set_position(int x, int y, Player::Facing facing) {
-  x_ = x * kTileSize;
-  y_ = y * kTileSize;
+  tx_ = x_ = x * kTileSize;
+  ty_ = y_ = y * kTileSize;
   facing_ = facing;
 }
 
@@ -42,6 +45,59 @@ size_t Player::counter() const {
   return counter_;
 }
 
+void Player::update(unsigned int elapsed) {
+  const double delta = v_ * elapsed;
+
+  if (x_ < tx_) {
+    x_ = std::min(x_ + delta, tx_);
+  } else if (x_ > tx_) {
+    x_ = std::max(x_ - delta, tx_);
+  }
+
+  if (y_ < ty_) {
+    y_ = std::min(y_ + delta, ty_);
+  } else if (y_ > ty_) {
+    y_ = std::max(y_ - delta, ty_);
+  }
+
+  if (animate_) {
+    timer_ = (timer_ + elapsed) % (4 * kAnimationSpeed);
+    if (!moving()) animate_ = false;
+  }
+}
+
 void Player::draw(Graphics& graphics) const {
-  sprites_.draw(graphics, 0, x_, y_);
+  sprites_.draw(graphics, frame(), x_, y_);
+}
+
+bool Player::moving() const {
+  return tx_ != x_ || ty_ != y_;
+}
+
+void Player::convey(int dx, int dy) {
+  set_target(x_ + dx, y_ + dy, kWalkSpeed);
+}
+
+void Player::push(int dx, int dy) {
+  set_target(x_ + dx, y_ + dy, kShoveSpeed);
+}
+
+int Player::map_x() const {
+  return x_ / kTileSize;
+}
+
+int Player::map_y() const {
+  return y_ / kTileSize;
+}
+
+int Player::frame() const {
+  const int base = static_cast<int>(facing_) * 3;
+  const int anim = (timer_ > 3 * kAnimationSpeed) ? 1 : (kAnimationSpeed / 3);
+  return base + (animate_ ? anim : 0);
+}
+
+void Player::set_target(int tx, int ty, double speed) {
+  tx_ = tx;
+  ty_ = ty;
+  v_ = speed;
 }
