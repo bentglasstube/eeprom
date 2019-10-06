@@ -66,7 +66,11 @@ void Player::update(unsigned int elapsed) {
 
   if (animate_) {
     timer_ = (timer_ + elapsed) % (4 * kAnimationSpeed);
-    if (!moving()) animate_ = false;
+  }
+
+  if (!moving()) {
+    animate_ = false;
+    v_ = 0;
   }
 }
 
@@ -133,6 +137,9 @@ void Player::set_target(int tx, int ty, double speed, const Map& map) {
 
   if (map.tile(mx, my).solid()) {
     // TODO crush robot if going fast;
+    tx_ = x_;
+    ty_ = y_;
+    v_ = 0;
     return;
   }
 
@@ -142,6 +149,8 @@ void Player::set_target(int tx, int ty, double speed, const Map& map) {
 }
 
 void Player::walk(const Map& map) {
+  const double curspeed = v_;
+
   switch (facing_) {
     case Facing::N:
       set_target(tx_, ty_ - kTileSize, kWalkSpeed, map);
@@ -156,6 +165,10 @@ void Player::walk(const Map& map) {
       set_target(tx_ - kTileSize, tx_, kWalkSpeed, map);
       break;
   }
+
+  // Add back potential conveyor speed
+  v_ += curspeed;
+
   animate_ = true;
   timer_ = 0;
 }
