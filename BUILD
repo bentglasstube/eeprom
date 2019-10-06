@@ -62,6 +62,7 @@ cc_library(
         "@libgam//:screen",
         "@libgam//:text",
         ":game_state",
+        ":map",
     ],
 )
 
@@ -70,3 +71,14 @@ cc_library(
     srcs = ["game_state.cc"],
     hdrs = ["game_state.h"],
 )
+
+cc_library(
+    name = "map",
+    srcs = ["map.cc"],
+    hdrs = ["map.h"],
+    deps = [
+        "@libgam//:spritemap",
+        "@libgam//:util",
+    ],
+)
+
