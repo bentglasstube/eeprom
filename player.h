@@ -58,4 +58,7 @@ class Player {
 
     void walk(const Map& map);
     void rotate(bool clockwise);
+
+    int xdiff() const;
+    int ydiff() const;
 };

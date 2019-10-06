@@ -126,8 +126,6 @@ int Player::map_y() const {
 int Player::frame() const {
   const int base = static_cast<int>(facing_) * 4;
   const int anim = timer_ / kAnimationSpeed;
-  const int frame = base + (animate_ ? anim : 0);
-
   return base + (animate_ ? anim : 0);
 }
 
@@ -135,7 +133,16 @@ void Player::set_target(int tx, int ty, double speed, const Map& map) {
   const int mx = tx / 16;
   const int my = ty / 16;
 
-  if (map.tile(mx, my).solid()) {
+  const auto tile = map.tile(mx, my);
+
+  if (tile.solid()) {
+    if (tile.type == Map::TileType::Box) {
+      const auto next = map.tile(mx + xdiff(), my + ydiff());
+      if (!next.solid()) {
+        // TODO push block
+      }
+    }
+
     // TODO crush robot if going fast;
     tx_ = x_;
     ty_ = y_;
@@ -148,24 +155,31 @@ void Player::set_target(int tx, int ty, double speed, const Map& map) {
   v_ = speed;
 }
 
-void Player::walk(const Map& map) {
-  const double curspeed = v_;
+int Player::xdiff() const {
+  switch (facing_) {
+    case Facing::E:
+      return 1;
+    case Facing::W:
+      return -1;
+    default:
+      return 0;
+  }
+}
 
+int Player::ydiff() const {
   switch (facing_) {
     case Facing::N:
-      set_target(tx_, ty_ - kTileSize, kWalkSpeed, map);
-      break;
-    case Facing::E:
-      set_target(tx_ + kTileSize, ty_, kWalkSpeed, map);
-      break;
+      return -1;
     case Facing::S:
-      set_target(tx_, ty_ + kTileSize, kWalkSpeed, map);
-      break;
-    case Facing::W:
-      set_target(tx_ - kTileSize, tx_, kWalkSpeed, map);
-      break;
+      return 1;
+    default:
+      return 0;
   }
+}
 
+void Player::walk(const Map& map) {
+  const double curspeed = v_;
+  set_target(tx_ + xdiff() * kTileSize, ty_ + ydiff() * kTileSize, kWalkSpeed, map);
   // Add back potential conveyor speed
   v_ += curspeed;
 
