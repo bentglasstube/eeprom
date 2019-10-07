@@ -87,6 +87,6 @@ $(APP_NAME).app: $(EXECUTABLE) launcher $(CONTENT) Info.plist
 	cp -R /Library/Frameworks/SDL2_image.framework $(APP_NAME).app/Contents/Frameworks/SDL2_image.framework
 
 clean:
-	rm -rf $(BUILDDIR) $(APP_NAME).app $(PACKAGE)
+	rm -rf $(BUILDDIR) *.app *.zip *.tgz
 
 .PHONY: all clean run package
