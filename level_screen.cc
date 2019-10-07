@@ -7,7 +7,7 @@ LevelScreen::LevelScreen(GameState state) :
   timer_(0), choice_(0)
 {}
 
-bool LevelScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
+bool LevelScreen::update(const Input& input, Audio&, unsigned int elapsed) {
 
   timer_ += elapsed;
 
