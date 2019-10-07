@@ -69,10 +69,9 @@ $(NAME)-osx-$(VERSION).tgz: $(APP_NAME).app
 	rm -rf $(NAME)
 
 $(NAME)-windows-$(VERSION).zip: $(EXECUTABLE) $(CONTENT)
-	mkdir $(NAME)
+	mkdir -p $(NAME)/content
 	cp $(EXECUTABLE) $(NAME)/`basename $(EXECUTABLE)`.exe
-	cp -R content $(NAME)/content
-	# TODO set up dlls and shit
+	cp $(CONTENT) $(NAME)/content/.
 	zip -r $@ $(NAME)
 	rm -rf $(NAME)
 
