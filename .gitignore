@@ -1,6 +1,5 @@
 bazel-*
-eeprom-*.zip
-eeprom-*.tgz
-*.app
-output
-res/*.mmpz.bak
+/*.zip
+/*.tgz
+/*.app
+*output/
