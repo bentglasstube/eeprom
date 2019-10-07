@@ -20,7 +20,6 @@ class Map {
 
     struct Tile {
       TileType type;
-      int top, left, right, bottom;
 
       bool solid() const;
       bool conveyor() const;
@@ -54,7 +53,7 @@ class Map {
     static constexpr int kMaxHeight = 16;
     static constexpr int kAnimationFrames = 8;
     static constexpr int kFrameLength = 100;
-    static constexpr Tile kNullTile = {};
+    static constexpr Tile kNullTile = { TileType::OutOfBounds };
 
     SpriteMap tileset_;
     int width_, height_, timer_;

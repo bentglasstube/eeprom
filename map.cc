@@ -141,11 +141,6 @@ Map::Tile Map::tile(int x, int y) const {
     tile.type = tiles_[y][x];
   }
 
-  tile.top = y * kTileSize;
-  tile.left = x * kTileSize;
-  tile.right = tile.left + kTileSize;
-  tile.bottom = tile.top + kTileSize;
-
   return tile;
 }
 
