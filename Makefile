@@ -1,11 +1,15 @@
 UNAME=$(shell uname)
+ifeq ($(UNAME), Windows)
+	CROSS=i686-w64-mingw32.static-
+endif
 
 SOURCES=$(wildcard *.cc) $(wildcard gam/*.cc)
-CONTENT=$(wildcard content/*)
-BUILDDIR=output
+CONTENT=$(wildcard content/*.png) $(wildcard content/*.ogg) $(wildcard content/*.wav)
+BUILDDIR=$(CROSS)output
 OBJECTS=$(patsubst %.cc,$(BUILDDIR)/%.o,$(SOURCES))
 NAME=eeprom
 APP_NAME="EEPROM"
+VERSION=$(shell git describe --tags --dirty)
 
 CC=$(CROSS)g++
 LD=$(CROSS)ld
@@ -13,13 +17,18 @@ AR=$(CROSS)ar
 PKG_CONFIG=$(CROSS)pkg-config
 CFLAGS=-O3 --std=c++14 -Wall -Wextra -Werror -pedantic -I gam -DNDEBUG
 
+ifeq ($(UNAME), Windows)
+	PACKAGE=$(NAME)-windows-$(VERSION).zip
+	LDFLAGS=-static-libstdc++ -static-libgcc
+	LDLIBS=`$(PKG_CONFIG) sdl2 SDL2_mixer SDL2_image --cflags --libs` -L/home/alan/source/gam -Wl,-Bstatic -lgam
+endif
 ifeq ($(UNAME), Linux)
-	PACKAGE=$(NAME)-linux.tgz
+	PACKAGE=$(NAME)-linux-$(VERSION).tgz
 	LDFLAGS=-static-libstdc++ -static-libgcc
 	LDLIBS=`$(PKG_CONFIG) sdl2 SDL2_mixer SDL2_image --cflags --libs` -L/home/alan/source/gam -Wl,-Bstatic -lgam
 endif
 ifeq ($(UNAME), Darwin)
-	PACKAGE=$(NAME)-osx.tgz
+	PACKAGE=$(NAME)-osx-$(VERSION).tgz
 	LDLIBS=-framework SDL2 -framework SDL2_mixer -framework SDL2_image -rpath @executable_path/../Frameworks
 	CFLAGS+=-mmacosx-version-min=10.9
 endif
@@ -27,6 +36,12 @@ endif
 EXECUTABLE=$(BUILDDIR)/$(NAME)
 
 all: $(EXECUTABLE)
+
+echo:
+	@echo "Content: $(CONTENT)"
+	@echo "Sources: $(SOURCES)"
+	@echo "Uname: $(UNAME)"
+	@echo "Package: $(PACKAGE)"
 
 run: $(EXECUTABLE)
 	./$(EXECUTABLE)
@@ -40,20 +55,20 @@ $(BUILDDIR)/%.o: %.cc
 
 package: $(PACKAGE)
 
-$(NAME)-linux.tgz: $(EXECUTABLE)
-	mkdir $(NAME)
-	cp $(EXECUTABLE) README.md $(NAME)
-	cp -R content $(NAME)/content
+$(NAME)-linux-$(VERSION).tgz: $(EXECUTABLE) $(CONTENT)
+	mkdir -p $(NAME)/content
+	cp $(EXECUTABLE) $(NAME)
+	cp $(CONTENT) $(NAME)/content/.
 	tar zcf $@ $(NAME)
 	rm -rf $(NAME)
 
-$(NAME)-osx.tgz: $(APP_NAME).app
+$(NAME)-osx-$(VERSION).tgz: $(APP_NAME).app
 	mkdir $(NAME)
 	cp -r $(APP_NAME).app $(NAME)/.
 	tar zcf $@ $(NAME)
 	rm -rf $(NAME)
 
-$(NAME)-windows.zip: $(EXECUTABLE)
+$(NAME)-windows-$(VERSION).zip: $(EXECUTABLE) $(CONTENT)
 	mkdir $(NAME)
 	cp $(EXECUTABLE) $(NAME)/`basename $(EXECUTABLE)`.exe
 	cp -R content $(NAME)/content
