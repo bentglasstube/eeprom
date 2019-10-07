@@ -11,7 +11,7 @@ CC=$(CROSS)g++
 LD=$(CROSS)ld
 AR=$(CROSS)ar
 PKG_CONFIG=$(CROSS)pkg-config
-CFLAGS=-O3 --std=c++14 -Wall -Wextra -Werror -pedantic -I ~/source/gam -DNDEBUG
+CFLAGS=-O3 --std=c++14 -Wall -Wextra -Werror -pedantic -I gam -DNDEBUG
 
 ifeq ($(UNAME), Linux)
 	PACKAGE=$(NAME)-linux.tgz
