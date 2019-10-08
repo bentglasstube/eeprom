@@ -2,4 +2,6 @@ bazel-*
 /*.zip
 /*.tgz
 /*.app
+/*.AppImage
+/*.AppDir
 *output/

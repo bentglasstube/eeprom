@@ -8,7 +8,7 @@ CONTENT=$(wildcard content/*.png) $(wildcard content/*.ogg) $(wildcard content/*
 BUILDDIR=$(CROSS)output
 OBJECTS=$(patsubst %.cc,$(BUILDDIR)/%.o,$(SOURCES))
 NAME=eeprom
-APP_NAME="EEPROM"
+APP_NAME=EEPROM
 VERSION=$(shell git describe --tags --dirty)
 
 CC=$(CROSS)g++
@@ -23,7 +23,7 @@ ifeq ($(UNAME), Windows)
 	LDLIBS=`$(PKG_CONFIG) sdl2 SDL2_mixer SDL2_image --cflags --libs` -L/home/alan/source/gam -Wl,-Bstatic -lgam
 endif
 ifeq ($(UNAME), Linux)
-	PACKAGE=$(NAME)-linux-$(VERSION).tgz
+	PACKAGE=$(APP_NAME)-linux-$(VERSION).AppImage
 	LDFLAGS=-static-libstdc++ -static-libgcc
 	LDLIBS=`$(PKG_CONFIG) sdl2 SDL2_mixer SDL2_image --cflags --libs` -L/home/alan/source/gam -Wl,-Bstatic -lgam
 endif
@@ -55,13 +55,6 @@ $(BUILDDIR)/%.o: %.cc
 
 package: $(PACKAGE)
 
-$(NAME)-linux-$(VERSION).tgz: $(EXECUTABLE) $(CONTENT)
-	mkdir -p $(NAME)/content
-	cp $(EXECUTABLE) $(NAME)
-	cp $(CONTENT) $(NAME)/content/.
-	tar zcf $@ $(NAME)
-	rm -rf $(NAME)
-
 $(NAME)-osx-$(VERSION).tgz: $(APP_NAME).app
 	mkdir $(NAME)
 	cp -r $(APP_NAME).app $(NAME)/.
@@ -85,6 +78,20 @@ $(APP_NAME).app: $(EXECUTABLE) launcher $(CONTENT) Info.plist
 	cp -R /Library/Frameworks/SDL2.framework $(APP_NAME).app/Contents/Frameworks/SDL2.framework
 	cp -R /Library/Frameworks/SDL2_mixer.framework $(APP_NAME).app/Contents/Frameworks/SDL2_mixer.framework
 	cp -R /Library/Frameworks/SDL2_image.framework $(APP_NAME).app/Contents/Frameworks/SDL2_image.framework
+
+$(APP_NAME)-linux-$(VERSION).AppDir: $(EXECUTABLE) $(CONTENT)
+	rm -rf $@
+	mkdir -p $@/usr/{bin,lib}
+	mkdir -p $@/content
+	cp $(EXECUTABLE) $@/usr/bin
+	cp AppRun $@/.
+	cp $(APP_NAME).desktop $@/.
+	cp icon.png $@/.
+	cp $(CONTENT) $@/content/.
+	cp /usr/lib/libSDL2{,_image,_mixer}-2.0.so.0 $@/usr/lib/.
+
+$(APP_NAME)-linux-$(VERSION).AppImage: $(APP_NAME)-linux-$(VERSION).AppDir
+	appimagetool $<
 
 clean:
 	rm -rf $(BUILDDIR) *.app *.zip *.tgz
