@@ -9,6 +9,11 @@ Map::TileType Map::tile_from_sprite(int sprite) {
     case 2:     return TileType::Block;
     case 3:     return TileType::Box;
 
+    case 8:     return Map::TileType::Block;
+    case 9:     return Map::TileType::Block;
+    case 10:    return Map::TileType::Block;
+    case 11:    return Map::TileType::Block;
+
     case 13:    return TileType::DoorN;
     case 14:    return TileType::DoorS;
     case 15:    return TileType::DoorW;
