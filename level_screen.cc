@@ -113,7 +113,7 @@ bool LevelScreen::update(const Input& input, Audio& audio, unsigned int elapsed)
 
 void LevelScreen::transition(LevelScreen::State state) {
   state_ = state;
-  timer_ = 0;
+  timer_ = state == State::Execution ? kStepTime : 0;
 }
 
 void LevelScreen::draw(Graphics& graphics) const {
