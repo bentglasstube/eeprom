@@ -76,6 +76,7 @@ bool LevelScreen::update(const Input& input, Audio& audio, unsigned int elapsed)
       }
 
       if (step_complete()) {
+        level_.player.stop();
         timer_ = 0;
 
         if (level_.player.dead()) {

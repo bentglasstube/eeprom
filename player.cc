@@ -84,11 +84,11 @@ void Player::update(unsigned int elapsed) {
   } else if (animate_) {
     timer_ = (timer_ + elapsed) % (4 * kAnimationSpeed);
   }
+}
 
-  if (!moving()) {
-    animate_ = false;
-    v_ = 0;
-  }
+void Player::stop() {
+  animate_ = false;
+  v_ = 0;
 }
 
 void Player::draw(Graphics& graphics) const {

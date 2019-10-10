@@ -36,6 +36,7 @@ class Player {
     void push(int dx, int dy, const Map& map);
     void execute(const Map& map);
     void fall();
+    void stop();
 
     int map_x() const;
     int map_y() const;
