@@ -32,8 +32,9 @@ void Player::add_instruction(Player::Instruction op) {
 }
 
 void Player::remove_instruction() {
-  program_.pop_back();
-  counter_ = 0;
+  if (!program_.empty()) {
+    program_.pop_back();
+  }
 }
 
 void Player::clear_program() {
