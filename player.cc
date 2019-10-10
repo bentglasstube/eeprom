@@ -198,11 +198,7 @@ int Player::ydiff() const {
 }
 
 void Player::walk(const Map& map) {
-  const double curspeed = v_;
   set_target(tx_ + xdiff() * kTileSize, ty_ + ydiff() * kTileSize, kWalkSpeed, map);
-  // Add back potential conveyor speed
-  v_ += curspeed;
-
   animate_ = true;
   timer_ = 0;
 }
