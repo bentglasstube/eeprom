@@ -105,7 +105,7 @@ bool Player::dead() const {
 
 void Player::convey(int dx, int dy, const Map& map) {
   if (moving()) return;
-  set_target(x_ + dx * kTileSize, y_ + dy * kTileSize, kWalkSpeed, map);
+  set_target(x_ + dx * kTileSize, y_ + dy * kTileSize, kConveyorSpeed, map);
 }
 
 void Player::push(int tx, int ty, const Map& map) {
@@ -168,12 +168,11 @@ void Player::set_target(int tx, int ty, double speed, const Map& map) {
     tx_ = x_;
     ty_ = y_;
     v_ = 0;
-    return;
+  } else {
+    tx_ = tx;
+    ty_ = ty;
+    v_ = speed;
   }
-
-  tx_ = tx;
-  ty_ = ty;
-  v_ = speed;
 }
 
 int Player::xdiff() const {

@@ -45,6 +45,7 @@ class Player {
     static constexpr int kTileSize = 16;
     static constexpr int kAnimationSpeed = 120;
     static constexpr double kWalkSpeed = 0.03;
+    static constexpr double kConveyorSpeed = 0.01;
     static constexpr double kShoveSpeed = 0.1;
     static constexpr double kTurnSpeed = 0.005;
 

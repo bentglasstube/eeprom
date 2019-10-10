@@ -90,8 +90,10 @@ bool LevelScreen::update(const Input& input, Audio& audio, unsigned int elapsed)
             level_.player.fall();
           } else {
             level_.step_pistons(audio);
-            level_.conveyors();
-            level_.run_program();
+            if (!level_.player.moving()) {
+              level_.conveyors();
+              level_.run_program();
+            }
           }
         }
       }
