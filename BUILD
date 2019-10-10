@@ -122,6 +122,17 @@ cc_library(
     deps = [
         "@libgam//:graphics",
         "@libgam//:spritemap",
+        ":object",
+    ],
+)
+
+cc_library(
+    name = "object",
+    srcs = ["object.cc"],
+    hdrs = ["object.h"],
+    deps = [
+        "@libgam//:graphics",
+        ":map",
     ],
 )
 

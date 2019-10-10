@@ -31,6 +31,8 @@ class Level {
 
   private:
 
+    static constexpr double kPushSpeed = 0.01;
+
     Map map_;
     std::vector<Piston> pistons_;
     std::vector<Crate> crates_;

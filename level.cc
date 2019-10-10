@@ -319,9 +319,7 @@ bool Level::push_player(std::pair<int, int> from, std::pair<int, int> to) {
 bool Level::push_crate(int x, int y, int tx, int ty) {
   for (auto &c : crates_) {
     if (c.map_x() == x && c.map_y() == y) {
-      c.push(tx, ty);
-      // TODO check if map is solid
-      return true;
+      return c.push(kPushSpeed, tx, ty, map_);
     }
   }
   return false;

@@ -157,17 +157,12 @@ void Player::set_target(int tx, int ty, double speed, const Map& map) {
   const auto tile = map.tile(mx, my);
 
   if (tile.solid()) {
-    if (tile.type == Map::TileType::Box) {
-      const auto next = map.tile(mx + xdiff(), my + ydiff());
-      if (!next.solid()) {
-        // TODO push block
-      }
-    }
-
     // TODO crush robot if going fast;
     tx_ = x_;
     ty_ = y_;
     v_ = 0;
+
+    // TODO check for block
   } else {
     tx_ = tx;
     ty_ = ty;
