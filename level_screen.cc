@@ -84,16 +84,14 @@ bool LevelScreen::update(const Input& input, Audio& audio, unsigned int elapsed)
           gs_.next_level();
           audio.play_sample("powerup.wav");
           transition(State::Outro);
+        } else if (robot_in_pit()) {
+          audio.play_sample("fall.wav");
+          level_.player.fall();
         } else {
-          if (robot_in_pit()) {
-            audio.play_sample("fall.wav");
-            level_.player.fall();
-          } else {
-            level_.step_pistons(audio);
-            if (!level_.player.moving()) {
-              level_.conveyors();
-              level_.run_program();
-            }
+          level_.step_pistons(audio);
+          if (!level_.player.moving()) {
+            level_.conveyors();
+            level_.run_program();
           }
         }
       }
