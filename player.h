@@ -30,9 +30,12 @@ class Player {
     void draw(Graphics& graphics) const;
 
     bool moving() const;
+    bool dead() const;
+
     void convey(int dx, int dy, const Map& map);
     void push(int dx, int dy, const Map& map);
     void execute(const Map& map);
+    void fall();
 
     int map_x() const;
     int map_y() const;
@@ -51,7 +54,7 @@ class Player {
     double rot_;
     int timer_;
     Facing facing_;
-    bool animate_;
+    bool animate_, falling_;
 
     std::vector<Instruction> program_;
     size_t counter_;

@@ -17,14 +17,15 @@ std::string Player::instruction_text(Player::Instruction op) {
 Player::Player() :
   sprites_("robots.png", 4, kTileSize, kTileSize),
   x_(0), y_(0), v_(0), tx_(0), ty_(0), rot_(0), timer_(0),
-  facing_(Facing::S), animate_(false),
+  facing_(Facing::S), animate_(false), falling_(false),
   program_(), counter_(0) {}
 
 void Player::set_position(int x, int y, Player::Facing facing) {
   tx_ = x_ = x * kTileSize;
   ty_ = y_ = y * kTileSize;
-  facing_ = facing;
   rot_ = 0;
+  facing_ = facing;
+  animate_ = falling_ = false;
 }
 
 void Player::add_instruction(Player::Instruction op) {
@@ -58,7 +59,7 @@ void Player::update(unsigned int elapsed) {
   const double delta = v_ * elapsed;
 
   if (rot_ != 0) {
-    const double dr = kTurnSpeed * elapsed;
+    const double dr = kTurnSpeed * elapsed * (falling_ ? 2 : 1);
     if (rot_ > 0) {
       rot_ = std::max(rot_ - dr, 0.0);
     } else {
@@ -78,7 +79,9 @@ void Player::update(unsigned int elapsed) {
     y_ = std::max(y_ - delta, ty_);
   }
 
-  if (animate_) {
+  if (falling_) {
+    timer_ += elapsed;
+  } else if (animate_) {
     timer_ = (timer_ + elapsed) % (4 * kAnimationSpeed);
   }
 
@@ -94,6 +97,10 @@ void Player::draw(Graphics& graphics) const {
 
 bool Player::moving() const {
   return tx_ != x_ || ty_ != y_ || rot_ != 0;
+}
+
+bool Player::dead() const {
+  return falling_ && rot_ == 0;
 }
 
 void Player::convey(int dx, int dy, const Map& map) {
@@ -138,9 +145,9 @@ int Player::map_y() const {
 }
 
 int Player::frame() const {
-  const int base = static_cast<int>(facing_) * 4;
-  const int anim = timer_ / kAnimationSpeed;
-  return base + (animate_ ? anim : 0);
+  const int base = falling_ ? 16 : static_cast<int>(facing_) * 4;
+  const int anim = timer_ / kAnimationSpeed / (falling_ ? 2 : 1);
+  return base + ((animate_ || falling_) ? anim : 0);
 }
 
 void Player::set_target(int tx, int ty, double speed, const Map& map) {
@@ -218,4 +225,10 @@ void Player::rotate(bool clockwise) {
       facing_ = clockwise ? Facing::N : Facing::S;
       break;
   }
+}
+
+void Player::fall() {
+  rot_ = 12;
+  timer_ = 0;
+  animate_ = falling_ = true;
 }

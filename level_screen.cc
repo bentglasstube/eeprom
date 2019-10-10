@@ -78,17 +78,21 @@ bool LevelScreen::update(const Input& input, Audio& audio, unsigned int elapsed)
       if (step_complete()) {
         timer_ = 0;
 
-        if (robot_dead()) {
-          audio.play_sample("fall.wav");
+        if (level_.player.dead()) {
           transition(State::Outro);
         } else if (robot_left()) {
           gs_.next_level();
           audio.play_sample("powerup.wav");
           transition(State::Outro);
         } else {
-          level_.step_pistons(audio);
-          level_.conveyors();
-          level_.run_program();
+          if (robot_in_pit()) {
+            audio.play_sample("fall.wav");
+            level_.player.fall();
+          } else {
+            level_.step_pistons(audio);
+            level_.conveyors();
+            level_.run_program();
+          }
         }
       }
 
@@ -196,7 +200,7 @@ bool LevelScreen::step_complete() const {
   return timer_ >= kStepTime && !level_.player.moving();
 }
 
-bool LevelScreen::robot_dead() const {
+bool LevelScreen::robot_in_pit() const {
   const auto tile = level_.player_tile();
   return tile.pit();
 }
