@@ -31,9 +31,12 @@ void Player::add_instruction(Player::Instruction op) {
   program_.push_back(op);
 }
 
-void Player::remove_instruction() {
+void Player::remove_instruction(Audio& audio) {
   if (!program_.empty()) {
     program_.pop_back();
+    audio.play_sample("blip.wav");
+  } else {
+    audio.play_sample("nope.wav");
   }
 }
 

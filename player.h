@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "audio.h"
 #include "graphics.h"
 #include "map.h"
 #include "spritemap.h"
@@ -19,7 +20,7 @@ class Player {
     void set_position(int x, int y, Player::Facing facing);
 
     void add_instruction(Instruction op);
-    void remove_instruction();
+    void remove_instruction(Audio& audio);
     void clear_program();
 
     std::vector<Instruction> const& listing() const;

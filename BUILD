@@ -75,6 +75,7 @@ cc_library(
     srcs = ["level.cc"],
     hdrs = ["level.h"],
     deps = [
+        "@libgam//:audio",
         "@libgam//:graphics",
         ":crate",
         ":map",
@@ -88,6 +89,7 @@ cc_library(
     srcs = ["player.cc"],
     hdrs = ["player.h"],
     deps = [
+        "@libgam//:audio",
         "@libgam//:graphics",
         "@libgam//:spritemap",
         ":map",

@@ -7,7 +7,7 @@ LevelScreen::LevelScreen(GameState state) :
   timer_(0), choice_(0)
 {}
 
-bool LevelScreen::update(const Input& input, Audio&, unsigned int elapsed) {
+bool LevelScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
 
   timer_ += elapsed;
 
@@ -39,24 +39,27 @@ bool LevelScreen::update(const Input& input, Audio&, unsigned int elapsed) {
           case 3:
             if (level_.player.listing().size() < gs_.rom_size()) {
               level_.player.add_instruction(static_cast<Player::Instruction>(choice_));
+              audio.play_sample("blip.wav");
             } else {
-              // TODO error sound
+              audio.play_sample("nope.wav");
             }
             break;
 
           case 4:
-            level_.player.remove_instruction();
+            level_.player.remove_instruction(audio);
             break;
 
           case 5:
             level_.player.clear_program();
+            audio.play_sample("blip.wav");
             break;
 
           case 6:
           case 7:
             if (level_.player.listing().empty()) {
-              // TODO error sound
+              audio.play_sample("nope.wav");
             } else {
+              audio.play_sample("blip.wav");
               transition(State::Execution);
             }
             break;
@@ -68,18 +71,20 @@ bool LevelScreen::update(const Input& input, Audio&, unsigned int elapsed) {
     case State::Execution:
 
       if (input.key_pressed(Input::Button::A)) {
+        audio.play_sample("nope.wav");
         transition(State::Reset);
       }
 
       if (step_complete()) {
         if (robot_dead()) {
-          // TODO death sound
+          audio.play_sample("fall.wav");
           transition(State::Outro);
         } else if (robot_left()) {
           gs_.next_level();
+          audio.play_sample("powerup.wav");
           transition(State::Outro);
         } else {
-          level_.step_pistons();
+          level_.step_pistons(audio);
           level_.conveyors();
           level_.run_program();
         }

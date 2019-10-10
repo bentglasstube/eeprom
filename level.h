@@ -2,6 +2,9 @@
 
 #include <vector>
 
+#include "audio.h"
+#include "graphics.h"
+
 #include "crate.h"
 #include "map.h"
 #include "piston.h"
@@ -20,7 +23,7 @@ class Level {
     void draw(Graphics &graphics) const;
 
     void conveyors();
-    bool step_pistons();
+    bool step_pistons(Audio& audio);
     void run_program();
 
     Map::Tile player_tile() const;

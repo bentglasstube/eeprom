@@ -293,9 +293,10 @@ void Level::conveyors() {
   }
 }
 
-bool Level::step_pistons() {
+bool Level::step_pistons(Audio& audio) {
   for (auto& p : pistons_) {
     if (p.step()) {
+      audio.play_sample("slide.wav");
       // TODO see if something was pushed
       const auto from = p.push_from();
       const auto to = p.push_to();
