@@ -20,12 +20,12 @@ CFLAGS=-O3 --std=c++14 -Wall -Wextra -Werror -pedantic -I gam -DNDEBUG
 ifeq ($(UNAME), Windows)
 	PACKAGE=$(NAME)-windows-$(VERSION).zip
 	LDFLAGS=-static-libstdc++ -static-libgcc
-	LDLIBS=`$(PKG_CONFIG) sdl2 SDL2_mixer SDL2_image --cflags --libs` -L/home/alan/source/gam -Wl,-Bstatic -lgam
+	LDLIBS=`$(PKG_CONFIG) sdl2 SDL2_mixer SDL2_image --cflags --libs` -Wl,-Bstatic
 endif
 ifeq ($(UNAME), Linux)
 	PACKAGE=$(APP_NAME)-linux-$(VERSION).AppImage
 	LDFLAGS=-static-libstdc++ -static-libgcc
-	LDLIBS=`$(PKG_CONFIG) sdl2 SDL2_mixer SDL2_image --cflags --libs` -L/home/alan/source/gam -Wl,-Bstatic -lgam
+	LDLIBS=`$(PKG_CONFIG) sdl2 SDL2_mixer SDL2_image --cflags --libs` -Wl,-Bstatic
 endif
 ifeq ($(UNAME), Darwin)
 	PACKAGE=$(NAME)-osx-$(VERSION).tgz
