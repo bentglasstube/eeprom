@@ -16,11 +16,9 @@ void Piston::update(unsigned int elapsed) {
       timer_ += elapsed;
       if (timer_ > kExtensionRate) {
         timer_ -= kExtensionRate;
-        if (frame_ == kFrames) {
+        if (++frame_ == kFrames) {
           --frame_;
           state_ = State::Retracting;
-        } else {
-          ++frame_;
         }
       }
       break;
@@ -29,10 +27,8 @@ void Piston::update(unsigned int elapsed) {
       timer_ += elapsed;
       if (timer_ > kRetractionRate) {
         timer_ -= kRetractionRate;
-        if (frame_ == 0) {
+        if (--frame_ == 0) {
           state_ = State::Dormant;
-        } else {
-          --frame_;
         }
       }
       break;
