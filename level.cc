@@ -300,18 +300,16 @@ bool Level::step_pistons(Audio& audio) {
       // TODO see if something was pushed
       const auto from = p.push_from();
       const auto to = p.push_to();
-
-      if (push_player(from.first, from.second, to.first, to.second)) {
-      }
+      push_player(from, to);
     }
   }
 
   return false;
 }
 
-bool Level::push_player(int x, int y, int tx, int ty) {
-  if (player.map_x() == x && player.map_y() == y) {
-    player.push(tx, ty, map_);
+bool Level::push_player(std::pair<int, int> from, std::pair<int, int> to) {
+  if (player.map_x() == from.first && player.map_y() == from.second) {
+    player.push(to.first, to.second, map_);
     return true;
   } else {
     return false;

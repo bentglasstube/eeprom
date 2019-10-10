@@ -35,7 +35,7 @@ class Level {
     std::vector<Piston> pistons_;
     std::vector<Crate> crates_;
 
-    bool push_player(int x, int y, int tx, int ty);
+    bool push_player(std::pair<int, int> from, std::pair<int, int> to);
     bool push_crate(int x, int y, int tx, int ty);
 
     void populate(std::vector<int> tiles);
