@@ -16,7 +16,7 @@ std::string Player::instruction_text(Player::Instruction op) {
 
 Player::Player() :
   sprites_("robots.png", 4, kTileSize, kTileSize),
-  x_(0), y_(0), v_(0), tx_(0), ty_(0), timer_(0),
+  x_(0), y_(0), v_(0), tx_(0), ty_(0), rot_(0), timer_(0),
   facing_(Facing::S), animate_(false),
   program_(), counter_(0) {}
 
@@ -24,6 +24,7 @@ void Player::set_position(int x, int y, Player::Facing facing) {
   tx_ = x_ = x * kTileSize;
   ty_ = y_ = y * kTileSize;
   facing_ = facing;
+  rot_ = 0;
 }
 
 void Player::add_instruction(Player::Instruction op) {
@@ -56,6 +57,15 @@ size_t Player::counter() const {
 void Player::update(unsigned int elapsed) {
   const double delta = v_ * elapsed;
 
+  if (rot_ != 0) {
+    const double dr = kTurnSpeed * elapsed;
+    if (rot_ > 0) {
+      rot_ = std::max(rot_ - dr, 0.0);
+    } else {
+      rot_ = std::min(rot_ + dr, 0.0);
+    }
+  }
+
   if (x_ < tx_) {
     x_ = std::min(x_ + delta, tx_);
   } else if (x_ > tx_) {
@@ -79,11 +89,11 @@ void Player::update(unsigned int elapsed) {
 }
 
 void Player::draw(Graphics& graphics) const {
-  sprites_.draw(graphics, frame(), x_, y_);
+  sprites_.draw_ex(graphics, frame(), x_, y_, false, rot_, 8, 8);
 }
 
 bool Player::moving() const {
-  return tx_ != x_ || ty_ != y_;
+  return tx_ != x_ || ty_ != y_ || rot_ != 0;
 }
 
 void Player::convey(int dx, int dy, const Map& map) {
@@ -192,6 +202,8 @@ void Player::walk(const Map& map) {
 }
 
 void Player::rotate(bool clockwise) {
+  rot_ = 1.5 * (clockwise ? -1 : 1);
+
   switch (facing_) {
     case Facing::N:
       facing_ = clockwise ? Facing::E : Facing::W;

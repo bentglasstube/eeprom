@@ -43,10 +43,12 @@ class Player {
     static constexpr int kAnimationSpeed = 240;
     static constexpr double kWalkSpeed = 0.01;
     static constexpr double kShoveSpeed = 0.1;
+    static constexpr double kTurnSpeed = 0.002;
 
     SpriteMap sprites_;
 
     double x_, y_, v_, tx_, ty_;
+    double rot_;
     int timer_;
     Facing facing_;
     bool animate_;
