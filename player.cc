@@ -193,7 +193,14 @@ int Player::ydiff() const {
 }
 
 void Player::walk(const Map& map) {
-  set_target(tx_ + xdiff() * kTileSize, ty_ + ydiff() * kTileSize, kWalkSpeed, map);
+  int tx = x_ + xdiff() * kTileSize;
+  int ty = y_ + ydiff() * kTileSize;
+
+  // check if already moving from a conveyor
+  if (tx_ != x_ && xdiff() != 0) tx += tx_ - x_;
+  else if (ty_ != y_ && ydiff() != 0) ty += ty_ - y_;
+
+  set_target(tx, ty, kWalkSpeed, map);
   animate_ = true;
   timer_ = 0;
 }
