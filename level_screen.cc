@@ -76,6 +76,8 @@ bool LevelScreen::update(const Input& input, Audio& audio, unsigned int elapsed)
       }
 
       if (step_complete()) {
+        timer_ = 0;
+
         if (robot_dead()) {
           audio.play_sample("fall.wav");
           transition(State::Outro);
@@ -191,7 +193,7 @@ void LevelScreen::set_choice(int choice) {
 }
 
 bool LevelScreen::step_complete() const {
-  return !level_.player.moving();
+  return timer_ >= kStepTime && !level_.player.moving();
 }
 
 bool LevelScreen::robot_dead() const {

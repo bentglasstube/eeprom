@@ -25,6 +25,7 @@ class LevelScreen : public Screen {
 
     static constexpr int kFadeTime = 1000;
     static constexpr int kBlinkTime = 250;
+    static constexpr int kStepTime = 1000;
 
     Text text_;
     Box box_;
