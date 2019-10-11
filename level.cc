@@ -301,15 +301,6 @@ std::vector<Level::Push> Level::step_pistons() {
   return pushes;
 }
 
-bool Level::push_crate(int x, int y, int tx, int ty) {
-  for (auto &c : crates_) {
-    if (c.map_x() == x && c.map_y() == y) {
-      return c.push(kPushSpeed, tx, ty, map_);
-    }
-  }
-  return false;
-}
-
 bool Level::oob(int x, int y) const {
   if (x < 0) return true;
   if (x >= map_.width()) return true;
@@ -341,4 +332,34 @@ Map::Tile Level::tile(int x, int y) const {
 
 Level::Start Level::start() const {
   return start_;
+}
+
+bool Level::open(int px, int py) const {
+  const int mx = px / 16;
+  const int my = py / 16;
+
+  Map::Tile tile = map_.tile(mx, my);
+  if (tile.solid()) return false;
+
+  for (const auto& c : crates_) {
+    if (c.map_x() == mx && c.map_y() == my) return false;
+  }
+
+  return true;
+}
+
+bool Level::push(int px, int py, int tx, int ty) {
+  const int mx = px / 16;
+  const int my = py / 16;
+
+  if (!open(tx, ty)) return false;
+
+  for (auto& c : crates_) {
+    if (c.map_x() == mx && c.map_y() == my) {
+      c.push(kPushSpeed, tx / 16, ty / 16);
+      return true;
+    }
+  }
+
+  return false;
 }

@@ -7,7 +7,7 @@ Map::TileType Map::tile_from_sprite(int sprite) {
   switch (sprite) {
     case 1:     return TileType::Open;
     case 2:     return TileType::Block;
-    case 3:     return TileType::Box;
+    case 3:     return TileType::Open;
 
     case 8:     return Map::TileType::Block;
     case 9:     return Map::TileType::Block;

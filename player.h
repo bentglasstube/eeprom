@@ -34,7 +34,7 @@ class Player {
 
     void convey(const Level& level);
     void push(int dx, int dy, const Level& level);
-    void execute(const Level& level);
+    void execute(Level& level);
     void fall();
     void stop();
 
@@ -63,8 +63,9 @@ class Player {
 
     int frame() const;
     void set_target(int tx, int ty, double speed, const Level& level);
+    void set_target_push(int tx, int ty, double speed, Level& level);
 
-    void walk(const Level& level);
+    void walk(Level& level);
     void rotate(bool clockwise);
 
     int xdiff() const;

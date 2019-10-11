@@ -114,7 +114,7 @@ void Player::push(int tx, int ty, const Level& level) {
   set_target(tx * kTileSize, ty * kTileSize, kShoveSpeed, level);
 }
 
-void Player::execute(const Level& level) {
+void Player::execute(Level& level) {
   Instruction op = program_.at(counter_);
 
   switch (op) {
@@ -153,22 +153,32 @@ int Player::frame() const {
 }
 
 void Player::set_target(int tx, int ty, double speed, const Level& level) {
-  const int mx = tx / 16;
-  const int my = ty / 16;
-
-  const auto tile = level.tile(mx, my);
-
-  if (tile.solid()) {
+  if (level.open(tx, ty)) {
+    tx_ = tx;
+    ty_ = ty;
+    v_ = speed;
+  } else {
     // TODO crush robot if going fast;
     tx_ = x_;
     ty_ = y_;
     v_ = 0;
+  }
+}
 
-    // TODO check for block
-  } else {
+void Player::set_target_push(int tx, int ty, double speed, Level& level) {
+  if (level.open(tx, ty)) {
     tx_ = tx;
     ty_ = ty;
     v_ = speed;
+  } else if (level.push(tx, ty, tx + xdiff() * kTileSize, ty + ydiff() * kTileSize)) {
+    tx_ = tx;
+    ty_ = ty;
+    v_ = speed;
+  } else {
+    // TODO crush robot if going fast;
+    tx_ = x_;
+    ty_ = y_;
+    v_ = 0;
   }
 }
 
@@ -194,7 +204,7 @@ int Player::ydiff() const {
   }
 }
 
-void Player::walk(const Level& level) {
+void Player::walk(Level& level) {
   int tx = x_ + xdiff() * kTileSize;
   int ty = y_ + ydiff() * kTileSize;
 
@@ -202,7 +212,7 @@ void Player::walk(const Level& level) {
   if (tx_ != x_ && xdiff() != 0) tx += tx_ - x_;
   else if (ty_ != y_ && ydiff() != 0) ty += ty_ - y_;
 
-  set_target(tx, ty, kWalkSpeed, level);
+  set_target_push(tx, ty, kWalkSpeed, level);
   animate_ = true;
   timer_ = 0;
 }

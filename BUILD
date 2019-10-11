@@ -132,7 +132,6 @@ cc_library(
     hdrs = ["object.h"],
     deps = [
         "@libgam//:graphics",
-        ":map",
     ],
 )
 

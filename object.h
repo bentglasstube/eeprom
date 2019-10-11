@@ -1,6 +1,6 @@
 #pragma once
 
-#include "map.h"
+#include "graphics.h"
 
 class Object {
   public:
@@ -9,7 +9,7 @@ class Object {
     void update(unsigned int elapsed);
     virtual void draw(Graphics& graphics) const = 0;
 
-    bool push(double v, int tx, int ty, const Map& map);
+    void push(double v, int tx, int ty);
 
     int map_x() const;
     int map_y() const;

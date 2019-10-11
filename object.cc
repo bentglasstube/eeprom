@@ -20,18 +20,10 @@ void Object::update(unsigned int elapsed) {
   }
 }
 
-bool Object::push(double v, int tx, int ty, const Map& map) {
-  const auto tile = map.tile(tx, ty);
-
-  if (tile.solid()) {
-    return false;
-  } else {
-    tx_ = tx * kTileSize;
-    ty_ = ty * kTileSize;
-    v_ = v;
-
-    return true;
-  }
+void Object::push(double v, int tx, int ty) {
+  tx_ = tx * kTileSize;
+  ty_ = ty * kTileSize;
+  v_ = v;
 }
 
 int Object::map_x() const {
