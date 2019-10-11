@@ -1,6 +1,8 @@
 #include "object.h"
 
-Object::Object(int x, int y) : x_(x), y_(y) {}
+Object::Object(int x, int y) :
+  x_(x), y_(y), v_(0), tx_(x), ty_(y)
+{}
 
 void Object::update(unsigned int elapsed) {
   const double delta = v_ * elapsed;
