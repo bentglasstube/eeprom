@@ -111,7 +111,7 @@ void Player::convey(const Level& level) {
 }
 
 void Player::push(int tx, int ty, const Level& level) {
-  set_target(tx * kTileSize, ty * kTileSize, kShoveSpeed, level);
+  set_target(x_ + tx * kTileSize, y_ + ty * kTileSize, kShoveSpeed, level);
 }
 
 void Player::execute(Level& level) {
@@ -240,4 +240,8 @@ void Player::fall() {
   rot_ = 12;
   timer_ = 0;
   animate_ = falling_ = true;
+}
+
+bool Player::at(std::pair<int, int> pos) const {
+  return pos.first == map_x() && pos.second == map_y();
 }

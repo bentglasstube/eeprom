@@ -95,7 +95,7 @@ bool LevelScreen::update(const Input& input, Audio& audio, unsigned int elapsed)
           }
 
           for (const auto& p : pushes) {
-            if (p.from.first == player_.map_x() && p.from.second == player_.map_y()) {
+            if (player_.at(p.from)) {
               player_.push(p.dx(), p.dy(), level_);
             }
           }

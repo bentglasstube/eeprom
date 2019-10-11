@@ -40,6 +40,7 @@ class Player {
 
     int map_x() const;
     int map_y() const;
+    bool at(std::pair<int, int> pos) const;
 
   private:
 
