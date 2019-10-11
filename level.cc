@@ -1,5 +1,7 @@
 #include "level.h"
 
+#include <algorithm>
+
 Level::Push::Push(std::pair<int, int> from, std::pair<int, int> to) :
   from(from), to(to)
 {}
@@ -263,16 +265,21 @@ void Level::load(int level) {
   }
 }
 
-void Level::update(unsigned int elapsed) {
+void Level::update(Audio& audio, unsigned int elapsed) {
   map_.update(elapsed);
 
   for (auto& p : pistons_) {
     p.update(elapsed);
   }
 
+  auto fallen = [this](const Crate& c) { return tile(c.map_x(), c.map_y()).pit(); };
+
   for (auto& c : crates_) {
     c.update(elapsed);
+    if (fallen(c)) audio.play_sample("drop.wav");
   }
+
+  crates_.erase(std::remove_if(crates_.begin(), crates_.end(), fallen), crates_.end());
 }
 
 void Level::draw(Graphics& graphics) const {

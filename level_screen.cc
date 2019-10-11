@@ -107,7 +107,7 @@ bool LevelScreen::update(const Input& input, Audio& audio, unsigned int elapsed)
         }
       }
 
-      level_.update(elapsed);
+      level_.update(audio, elapsed);
       player_.update(elapsed);
       break;
 

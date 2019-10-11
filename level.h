@@ -29,7 +29,7 @@ class Level {
 
     void load(int level);
 
-    void update(unsigned int elapsed);
+    void update(Audio& audio, unsigned int elapsed);
     void draw(Graphics &graphics) const;
 
     std::vector<Push> step_pistons();
