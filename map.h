@@ -18,6 +18,10 @@ class Map {
       OutOfBounds,
     };
 
+    enum class Facing {
+      N, S, E, W
+    };
+
     struct Tile {
       TileType type;
 

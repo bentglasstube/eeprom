@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-GameState::GameState() : level_(1) {}
+GameState::GameState() : level_(5) {}
 
 void GameState::next_level() {
   ++level_;

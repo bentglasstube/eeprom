@@ -1,7 +1,5 @@
 #include "player.h"
 
-#include "map.h"
-
 #include <cmath>
 
 std::string Player::instruction_text(Player::Instruction op) {
@@ -17,14 +15,14 @@ std::string Player::instruction_text(Player::Instruction op) {
 Player::Player() :
   sprites_("robots.png", 4, kTileSize, kTileSize),
   x_(0), y_(0), v_(0), tx_(0), ty_(0), rot_(0), timer_(0),
-  facing_(Facing::S), animate_(false), falling_(false),
+  facing_(Map::Facing::S), animate_(false), falling_(false),
   program_(), counter_(0) {}
 
-void Player::set_position(int x, int y, Player::Facing facing) {
-  tx_ = x_ = x * kTileSize;
-  ty_ = y_ = y * kTileSize;
+void Player::set_position(Level::Start position) {
+  tx_ = x_ = position.x * kTileSize;
+  ty_ = y_ = position.y * kTileSize;
   rot_ = 0;
-  facing_ = facing;
+  facing_ = position.facing;
   animate_ = falling_ = false;
 }
 
@@ -103,16 +101,20 @@ bool Player::dead() const {
   return falling_ && rot_ == 0;
 }
 
-void Player::convey(int dx, int dy, const Map& map) {
+void Player::convey(const Level& level) {
   if (moving()) return;
-  set_target(x_ + dx * kTileSize, y_ + dy * kTileSize, kConveyorSpeed, map);
+
+  const auto tile = level.tile(map_x(), map_y());
+  if (tile.conveyor()) {
+    set_target(x_ + tile.dx() * kTileSize, y_ + tile.dy() * kTileSize, kConveyorSpeed, level);
+  }
 }
 
-void Player::push(int tx, int ty, const Map& map) {
-  set_target(tx * kTileSize, ty * kTileSize, kShoveSpeed, map);
+void Player::push(int tx, int ty, const Level& level) {
+  set_target(tx * kTileSize, ty * kTileSize, kShoveSpeed, level);
 }
 
-void Player::execute(const Map& map) {
+void Player::execute(const Level& level) {
   Instruction op = program_.at(counter_);
 
   switch (op) {
@@ -121,7 +123,7 @@ void Player::execute(const Map& map) {
       break;
 
     case Instruction::MOV:
-      walk(map);
+      walk(level);
       break;
 
     case Instruction::SHL:
@@ -150,11 +152,11 @@ int Player::frame() const {
   return base + ((animate_ || falling_) ? anim : 0);
 }
 
-void Player::set_target(int tx, int ty, double speed, const Map& map) {
+void Player::set_target(int tx, int ty, double speed, const Level& level) {
   const int mx = tx / 16;
   const int my = ty / 16;
 
-  const auto tile = map.tile(mx, my);
+  const auto tile = level.tile(mx, my);
 
   if (tile.solid()) {
     // TODO crush robot if going fast;
@@ -172,9 +174,9 @@ void Player::set_target(int tx, int ty, double speed, const Map& map) {
 
 int Player::xdiff() const {
   switch (facing_) {
-    case Facing::E:
+    case Map::Facing::E:
       return 1;
-    case Facing::W:
+    case Map::Facing::W:
       return -1;
     default:
       return 0;
@@ -183,16 +185,16 @@ int Player::xdiff() const {
 
 int Player::ydiff() const {
   switch (facing_) {
-    case Facing::N:
+    case Map::Facing::N:
       return -1;
-    case Facing::S:
+    case Map::Facing::S:
       return 1;
     default:
       return 0;
   }
 }
 
-void Player::walk(const Map& map) {
+void Player::walk(const Level& level) {
   int tx = x_ + xdiff() * kTileSize;
   int ty = y_ + ydiff() * kTileSize;
 
@@ -200,7 +202,7 @@ void Player::walk(const Map& map) {
   if (tx_ != x_ && xdiff() != 0) tx += tx_ - x_;
   else if (ty_ != y_ && ydiff() != 0) ty += ty_ - y_;
 
-  set_target(tx, ty, kWalkSpeed, map);
+  set_target(tx, ty, kWalkSpeed, level);
   animate_ = true;
   timer_ = 0;
 }
@@ -209,17 +211,17 @@ void Player::rotate(bool clockwise) {
   rot_ = 1.5 * (clockwise ? -1 : 1);
 
   switch (facing_) {
-    case Facing::N:
-      facing_ = clockwise ? Facing::E : Facing::W;
+    case Map::Facing::N:
+      facing_ = clockwise ? Map::Facing::E : Map::Facing::W;
       break;
-    case Facing::E:
-      facing_ = clockwise ? Facing::S : Facing::N;
+    case Map::Facing::E:
+      facing_ = clockwise ? Map::Facing::S : Map::Facing::N;
       break;
-    case Facing::S:
-      facing_ = clockwise ? Facing::W : Facing::E;
+    case Map::Facing::S:
+      facing_ = clockwise ? Map::Facing::W : Map::Facing::E;
       break;
-    case Facing::W:
-      facing_ = clockwise ? Facing::N : Facing::S;
+    case Map::Facing::W:
+      facing_ = clockwise ? Map::Facing::N : Map::Facing::S;
       break;
   }
 }

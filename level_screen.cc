@@ -37,8 +37,8 @@ bool LevelScreen::update(const Input& input, Audio& audio, unsigned int elapsed)
           case 1:
           case 2:
           case 3:
-            if (level_.player.listing().size() < gs_.rom_size()) {
-              level_.player.add_instruction(static_cast<Player::Instruction>(choice_));
+            if (player_.listing().size() < gs_.rom_size()) {
+              player_.add_instruction(static_cast<Player::Instruction>(choice_));
               audio.play_sample("blip.wav");
             } else {
               audio.play_sample("nope.wav");
@@ -46,17 +46,17 @@ bool LevelScreen::update(const Input& input, Audio& audio, unsigned int elapsed)
             break;
 
           case 4:
-            level_.player.remove_instruction(audio);
+            player_.remove_instruction(audio);
             break;
 
           case 5:
-            level_.player.clear_program();
+            player_.clear_program();
             audio.play_sample("blip.wav");
             break;
 
           case 6:
           case 7:
-            if (level_.player.listing().empty()) {
+            if (player_.listing().empty()) {
               audio.play_sample("nope.wav");
             } else {
               audio.play_sample("blip.wav");
@@ -76,10 +76,10 @@ bool LevelScreen::update(const Input& input, Audio& audio, unsigned int elapsed)
       }
 
       if (step_complete()) {
-        level_.player.stop();
+        player_.stop();
         timer_ = 0;
 
-        if (level_.player.dead()) {
+        if (player_.dead()) {
           transition(State::Outro);
         } else if (robot_left()) {
           gs_.next_level();
@@ -87,17 +87,28 @@ bool LevelScreen::update(const Input& input, Audio& audio, unsigned int elapsed)
           transition(State::Outro);
         } else if (robot_in_pit()) {
           audio.play_sample("fall.wav");
-          level_.player.fall();
+          player_.fall();
         } else {
-          level_.step_pistons(audio);
-          if (!level_.player.moving()) {
-            level_.conveyors();
-            level_.run_program();
+          const auto& pushes = level_.step_pistons();
+          if (!pushes.empty()) {
+            audio.play_sample("slide.wav");
+          }
+
+          for (const auto& p : pushes) {
+            if (p.from.first == player_.map_x() && p.from.second == player_.map_y()) {
+              player_.push(p.dx(), p.dy(), level_);
+            }
+          }
+
+          if (!player_.moving()) {
+            player_.convey(level_);
+            player_.execute(level_);
           }
         }
       }
 
       level_.update(elapsed);
+      player_.update(elapsed);
       break;
 
     case State::Reset:
@@ -123,6 +134,7 @@ void LevelScreen::transition(LevelScreen::State state) {
 
 void LevelScreen::draw(Graphics& graphics) const {
   level_.draw(graphics);
+  player_.draw(graphics);
 
   const double alpha = fade_amount();
   if (alpha > 0) {
@@ -133,11 +145,11 @@ void LevelScreen::draw(Graphics& graphics) const {
   box_.draw(graphics, 192, 0, 64, 160);
   text_.draw(graphics, "ROM Dump", 200, 8);
 
-  const auto& listing = level_.player.listing();
+  const auto& listing = player_.listing();
   for (size_t i = 0; i < listing.size(); ++i) {
     const int y = 20 + 8 * i;
     text_.draw(graphics, Player::instruction_text(listing[i]), 202, y);
-    if (state_ == State::Execution && i == level_.player.counter()) text_.draw(graphics, ">", 196, y);
+    if (state_ == State::Execution && i == player_.counter()) text_.draw(graphics, ">", 196, y);
   }
 
   box_.draw(graphics, 192, 160, 64, 64);
@@ -198,23 +210,27 @@ void LevelScreen::set_choice(int choice) {
 }
 
 bool LevelScreen::step_complete() const {
-  return timer_ >= kStepTime && !level_.player.moving();
+  return timer_ >= kStepTime && !player_.moving();
 }
 
 bool LevelScreen::robot_in_pit() const {
-  const auto tile = level_.player_tile();
+  const auto tile = level_.tile(player_.map_x(), player_.map_y());
   return tile.pit();
 }
 
 bool LevelScreen::robot_left() const {
-  if (level_.player.moving()) return false;
-  if (level_.player_oob()) return true;
+  if (player_.moving()) return false;
+  if (level_.oob(player_.map_x(), player_.map_y())) return true;
   return false;
 }
 
 void LevelScreen::reset() {
   choice_ = 0;
-  level_.player.clear_program();
+  player_.clear_program();
+
   level_.load(gs_.level());
+  player_.set_position(level_.start());
+
   transition(State::Intro);
+
 }

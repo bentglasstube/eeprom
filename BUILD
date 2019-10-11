@@ -79,7 +79,6 @@ cc_library(
         "@libgam//:graphics",
         ":crate",
         ":map",
-        ":player",
         ":piston",
     ],
 )
@@ -92,7 +91,7 @@ cc_library(
         "@libgam//:audio",
         "@libgam//:graphics",
         "@libgam//:spritemap",
-        ":map",
+        ":level",
     ],
 )
 
@@ -112,6 +111,7 @@ cc_library(
     deps = [
         "@libgam//:graphics",
         "@libgam//:spritemap",
+        ":map",
     ],
 )
 

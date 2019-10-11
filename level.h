@@ -8,32 +8,42 @@
 #include "crate.h"
 #include "map.h"
 #include "piston.h"
-#include "player.h"
 
 class Level {
   public:
 
-    Player player;
-
     Level();
+
+    struct Push {
+      std::pair<int, int> from, to;
+
+      Push(std::pair<int, int> from, std::pair<int, int> to);
+      int dx() const;
+      int dy() const;
+    };
+
+    struct Start {
+      int x, y;
+      Map::Facing facing;
+    };
 
     void load(int level);
 
     void update(unsigned int elapsed);
     void draw(Graphics &graphics) const;
 
-    void conveyors();
-    bool step_pistons(Audio& audio);
-    void run_program();
+    std::vector<Push> step_pistons();
 
-    Map::Tile player_tile() const;
-    bool player_oob() const;
+    bool oob(int x, int y) const;
+    Map::Tile tile(int x, int y) const;
+    Start start() const;
 
   private:
 
     static constexpr double kPushSpeed = 0.01;
 
     Map map_;
+    Start start_;
     std::vector<Piston> pistons_;
     std::vector<Crate> crates_;
 

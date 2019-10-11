@@ -33,6 +33,7 @@ class LevelScreen : public Screen {
     GameState gs_;
     State state_;
     Level level_;
+    Player player_;
 
     int timer_, choice_;
 

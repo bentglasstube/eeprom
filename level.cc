@@ -1,6 +1,18 @@
 #include "level.h"
 
-Level::Level() : player(), map_() {
+Level::Push::Push(std::pair<int, int> from, std::pair<int, int> to) :
+  from(from), to(to)
+{}
+
+int Level::Push::dx() const {
+  return to.first - from.first;
+}
+
+int Level::Push::dy() const {
+  return to.second - from.second;
+}
+
+Level::Level() : map_() {
   map_.set_size(12, 14);
 }
 
@@ -27,8 +39,8 @@ void Level::load(int level) {
           92,82,82,82,82,82,82,93,90,90,90,90
           });
 
-      player.set_position(4, 1, Player::Facing::S);
-      pistons_.emplace_back(3, 4, Piston::Facing::E, 4);
+      start_ = { 4, 1, Map::Facing::S };
+      pistons_.emplace_back(3, 4, Map::Facing::E, 4);
 
       break;
 
@@ -50,11 +62,11 @@ void Level::load(int level) {
           92,82,82,82,82,82,82,82,82,82,82,93
           });
 
-      player.set_position(1, 4, Player::Facing::E);
-      pistons_.emplace_back(3, 5, Piston::Facing::N, 4, 4);
-      pistons_.emplace_back(4, 5, Piston::Facing::N, 4, 3);
-      pistons_.emplace_back(6, 5, Piston::Facing::N, 4, 2);
-      pistons_.emplace_back(7, 3, Piston::Facing::S, 4, 1);
+      start_ = { 1, 4, Map::Facing::E };
+      pistons_.emplace_back(3, 5, Map::Facing::N, 4, 4);
+      pistons_.emplace_back(4, 5, Map::Facing::N, 4, 3);
+      pistons_.emplace_back(6, 5, Map::Facing::N, 4, 2);
+      pistons_.emplace_back(7, 3, Map::Facing::S, 4, 1);
 
       break;
 
@@ -76,7 +88,7 @@ void Level::load(int level) {
           92,82,82,82,82,83,1,81,82,82,82,93
           });
 
-      player.set_position(1, 4, Player::Facing::E);
+      start_ = { 1, 4, Map::Facing::E };
 
       break;
 
@@ -98,7 +110,7 @@ void Level::load(int level) {
           92,82,82,82,82,83,34,81,82,82,82,93
           });
 
-      player.set_position(6, 1, Player::Facing::S);
+      start_ = { 6, 1, Map::Facing::S };
 
       break;
 
@@ -120,9 +132,9 @@ void Level::load(int level) {
           92,82,82,82,82,83,1,81,82,82,82,93
           });
 
-      player.set_position(6, 1, Player::Facing::S);
-      pistons_.emplace_back(7, 8, Piston::Facing::N, 4);
-      pistons_.emplace_back(7, 12, Piston::Facing::W, 4, 2);
+      start_ = { 6, 1, Map::Facing::S };
+      pistons_.emplace_back(7, 8, Map::Facing::N, 4);
+      pistons_.emplace_back(7, 12, Map::Facing::W, 4, 2);
 
       break;
 
@@ -144,7 +156,7 @@ void Level::load(int level) {
           92,82,82,82,82,83,14,81,82,82,82,93
           });
 
-      player.set_position(6, 1, Player::Facing::S);
+      start_ = { 6, 1, Map::Facing::S };
 
       break;
 
@@ -166,10 +178,10 @@ void Level::load(int level) {
           90,90,90,90,90,90,90,90,90,90,90,90
           });
 
-      player.set_position(10, 7, Player::Facing::W);
-      pistons_.emplace_back(9, 1, Piston::Facing::S, 4, 2);
-      pistons_.emplace_back(8, 3, Piston::Facing::E, 4, 1);
-      pistons_.emplace_back(7, 2, Piston::Facing::E, 4, 3);
+      start_ = { 10, 7, Map::Facing::W };
+      pistons_.emplace_back(9, 1, Map::Facing::S, 4, 2);
+      pistons_.emplace_back(8, 3, Map::Facing::E, 4, 1);
+      pistons_.emplace_back(7, 2, Map::Facing::E, 4, 3);
 
       break;
 
@@ -191,17 +203,17 @@ void Level::load(int level) {
           92,82,82,82,82,82,82,82,82,82,82,93
           });
 
-      player.set_position(10, 7, Player::Facing::W);
+      start_ = { 10, 7, Map::Facing::W };
 
-      pistons_.emplace_back(1, 6, Piston::Facing::S, 5, 3);
-      pistons_.emplace_back(2, 6, Piston::Facing::S, 5, 4);
-      pistons_.emplace_back(3, 6, Piston::Facing::S, 5, 3);
-      pistons_.emplace_back(4, 6, Piston::Facing::S, 5, 3);
-      pistons_.emplace_back(5, 6, Piston::Facing::S, 5, 2);
-      pistons_.emplace_back(6, 6, Piston::Facing::S, 5, 2);
-      pistons_.emplace_back(7, 6, Piston::Facing::S, 5, 1);
-      pistons_.emplace_back(8, 6, Piston::Facing::S, 5, 1);
-      pistons_.emplace_back(9, 6, Piston::Facing::S, 5, 3);
+      pistons_.emplace_back(1, 6, Map::Facing::S, 5, 3);
+      pistons_.emplace_back(2, 6, Map::Facing::S, 5, 4);
+      pistons_.emplace_back(3, 6, Map::Facing::S, 5, 3);
+      pistons_.emplace_back(4, 6, Map::Facing::S, 5, 3);
+      pistons_.emplace_back(5, 6, Map::Facing::S, 5, 2);
+      pistons_.emplace_back(6, 6, Map::Facing::S, 5, 2);
+      pistons_.emplace_back(7, 6, Map::Facing::S, 5, 1);
+      pistons_.emplace_back(8, 6, Map::Facing::S, 5, 1);
+      pistons_.emplace_back(9, 6, Map::Facing::S, 5, 3);
 
       break;
 
@@ -223,7 +235,7 @@ void Level::load(int level) {
           92,82,82,82,83,1,81,82,82,82,82,93
           });
 
-      player.set_position(10, 7, Player::Facing::W);
+      start_ = { 10, 7, Map::Facing::W };
 
       break;
 
@@ -245,7 +257,7 @@ void Level::load(int level) {
           92,82,82,82,83,1,81,82,82,82,82,93
           });
 
-      player.set_position(5, 1, Player::Facing::S);
+      start_ = { 5, 1, Map::Facing::S };
 
       break;
   }
@@ -253,7 +265,6 @@ void Level::load(int level) {
 
 void Level::update(unsigned int elapsed) {
   map_.update(elapsed);
-  player.update(elapsed);
 
   for (auto& p : pistons_) {
     p.update(elapsed);
@@ -266,7 +277,6 @@ void Level::update(unsigned int elapsed) {
 
 void Level::draw(Graphics& graphics) const {
   map_.draw(graphics);
-  player.draw(graphics);
 
   for (const auto& p : pistons_) {
     p.draw(graphics);
@@ -277,43 +287,18 @@ void Level::draw(Graphics& graphics) const {
   }
 }
 
-Map::Tile Level::player_tile() const {
-  const int px = player.map_x();
-  const int py = player.map_y();
+std::vector<Level::Push> Level::step_pistons() {
+  std::vector<Push> pushes;
 
-  return  map_.tile(px, py);
-}
-
-void Level::conveyors() {
-  if (player.moving()) return;
-
-  const auto tile = player_tile();
-  if (tile.conveyor()) {
-    player.convey(tile.dx(), tile.dy(), map_);
-  }
-}
-
-bool Level::step_pistons(Audio& audio) {
   for (auto& p : pistons_) {
     if (p.step()) {
-      audio.play_sample("slide.wav");
       const auto from = p.push_from();
       const auto to = p.push_to();
-      if (push_player(from, to)) return true;
-      // TODO check for other objects to push
+      pushes.emplace_back(from, to);
     }
   }
 
-  return false;
-}
-
-bool Level::push_player(std::pair<int, int> from, std::pair<int, int> to) {
-  if (player.map_x() == from.first && player.map_y() == from.second) {
-    player.push(to.first, to.second, map_);
-    return true;
-  } else {
-    return false;
-  }
+  return pushes;
 }
 
 bool Level::push_crate(int x, int y, int tx, int ty) {
@@ -325,11 +310,11 @@ bool Level::push_crate(int x, int y, int tx, int ty) {
   return false;
 }
 
-bool Level::player_oob() const {
-  if (player.map_x() < 0) return true;
-  if (player.map_x() >= map_.width()) return true;
-  if (player.map_y() < 0) return true;
-  if (player.map_y() >= map_.height()) return true;
+bool Level::oob(int x, int y) const {
+  if (x < 0) return true;
+  if (x >= map_.width()) return true;
+  if (y < 0) return true;
+  if (y >= map_.height()) return true;
 
   return false;
 }
@@ -350,6 +335,10 @@ void Level::populate(std::vector<int> tiles) {
   }
 }
 
-void Level::run_program() {
-  player.execute(map_);
+Map::Tile Level::tile(int x, int y) const {
+  return map_.tile(x, y);
+}
+
+Level::Start Level::start() const {
+  return start_;
 }

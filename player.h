@@ -4,20 +4,20 @@
 
 #include "audio.h"
 #include "graphics.h"
+#include "level.h"
 #include "map.h"
 #include "spritemap.h"
 
 class Player {
   public:
 
-    enum class Facing {N, S, E, W};
     enum class Instruction { NOP, MOV, SHL, SHR };
 
     static std::string instruction_text(Instruction);
 
     Player();
 
-    void set_position(int x, int y, Player::Facing facing);
+    void set_position(Level::Start position);
 
     void add_instruction(Instruction op);
     void remove_instruction(Audio& audio);
@@ -32,9 +32,9 @@ class Player {
     bool moving() const;
     bool dead() const;
 
-    void convey(int dx, int dy, const Map& map);
-    void push(int dx, int dy, const Map& map);
-    void execute(const Map& map);
+    void convey(const Level& level);
+    void push(int dx, int dy, const Level& level);
+    void execute(const Level& level);
     void fall();
     void stop();
 
@@ -55,16 +55,16 @@ class Player {
     double x_, y_, v_, tx_, ty_;
     double rot_;
     int timer_;
-    Facing facing_;
+    Map::Facing facing_;
     bool animate_, falling_;
 
     std::vector<Instruction> program_;
     size_t counter_;
 
     int frame() const;
-    void set_target(int tx, int ty, double speed, const Map& map);
+    void set_target(int tx, int ty, double speed, const Level& level);
 
-    void walk(const Map& map);
+    void walk(const Level& level);
     void rotate(bool clockwise);
 
     int xdiff() const;
