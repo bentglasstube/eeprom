@@ -207,15 +207,15 @@ void Level::load(int level) {
 
       start_ = { 10, 7, Map::Facing::W };
 
-      pistons_.emplace_back(1, 6, Map::Facing::S, 5, 3);
-      pistons_.emplace_back(2, 6, Map::Facing::S, 5, 4);
+      pistons_.emplace_back(1, 6, Map::Facing::S, 5, 1);
+      pistons_.emplace_back(2, 6, Map::Facing::S, 5, 2);
       pistons_.emplace_back(3, 6, Map::Facing::S, 5, 3);
-      pistons_.emplace_back(4, 6, Map::Facing::S, 5, 3);
-      pistons_.emplace_back(5, 6, Map::Facing::S, 5, 2);
+      pistons_.emplace_back(4, 6, Map::Facing::S, 5, 4);
+      pistons_.emplace_back(5, 6, Map::Facing::S, 5, 1);
       pistons_.emplace_back(6, 6, Map::Facing::S, 5, 2);
       pistons_.emplace_back(7, 6, Map::Facing::S, 5, 1);
-      pistons_.emplace_back(8, 6, Map::Facing::S, 5, 1);
-      pistons_.emplace_back(9, 6, Map::Facing::S, 5, 3);
+      pistons_.emplace_back(8, 6, Map::Facing::S, 5, 3);
+      pistons_.emplace_back(9, 6, Map::Facing::S, 5, 1);
 
       break;
 
