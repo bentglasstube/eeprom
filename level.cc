@@ -14,7 +14,7 @@ int Level::Push::dy() const {
   return to.second - from.second;
 }
 
-Level::Level() : map_() {
+Level::Level() : map_(), pistons_(), crates_() {
   map_.set_size(12, 14);
 }
 

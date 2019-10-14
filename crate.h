@@ -8,6 +8,7 @@ class Crate : public Object {
   public:
 
     Crate(int x, int y);
+    virtual ~Crate();
 
     void draw(Graphics& graphics) const override;
 

@@ -4,6 +4,8 @@ Object::Object(int x, int y) :
   x_(x), y_(y), v_(0), tx_(x), ty_(y)
 {}
 
+Object::~Object() {}
+
 void Object::update(unsigned int elapsed) {
   const double delta = v_ * elapsed;
 

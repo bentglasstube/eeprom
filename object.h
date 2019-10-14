@@ -5,6 +5,7 @@
 class Object {
   public:
     Object(int x, int y);
+    virtual ~Object();
 
     void update(unsigned int elapsed);
     virtual void draw(Graphics& graphics) const = 0;
