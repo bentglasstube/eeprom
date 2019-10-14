@@ -4,4 +4,8 @@ bazel-*
 /*.app
 /*.AppImage
 /*.AppDir
+/*.data
+/*.html
+/*.js
+/*.wasm
 *output/

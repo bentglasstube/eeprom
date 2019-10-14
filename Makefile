@@ -16,6 +16,7 @@ LD=$(CROSS)ld
 AR=$(CROSS)ar
 PKG_CONFIG=$(CROSS)pkg-config
 CFLAGS=-O3 --std=c++14 -Wall -Wextra -Werror -pedantic -I gam -DNDEBUG
+EMFLAGS=-s USE_SDL=2 -s USE_SDL_MIXER=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png"]'
 
 ifeq ($(UNAME), Windows)
 	PACKAGE=$(NAME)-windows-$(VERSION).zip
@@ -55,6 +56,8 @@ $(BUILDDIR)/%.o: %.cc
 
 package: $(PACKAGE)
 
+wasm: $(NAME)-$(VERSION).html
+
 $(NAME)-osx-$(VERSION).tgz: $(APP_NAME).app
 	mkdir $(NAME)
 	cp -r $(APP_NAME).app $(NAME)/.
@@ -67,6 +70,9 @@ $(NAME)-windows-$(VERSION).zip: $(EXECUTABLE) $(CONTENT)
 	cp $(CONTENT) $(NAME)/content/.
 	zip -r $@ $(NAME)
 	rm -rf $(NAME)
+
+$(NAME)-$(VERSION).html: $(SOURCES) $(CONTENT)
+	emcc $(CFLAGS) $(EMFLAGS) -o $@ $(SOURCES) --preload-file content/
 
 $(APP_NAME).app: $(EXECUTABLE) launcher $(CONTENT) Info.plist
 	rm -rf $(APP_NAME).app
@@ -94,6 +100,6 @@ $(APP_NAME)-linux-$(VERSION).AppImage: $(APP_NAME)-linux-$(VERSION).AppDir
 	appimagetool $<
 
 clean:
-	rm -rf $(BUILDDIR) *.app *.zip *.tgz
+	rm -rf $(BUILDDIR) *.app *.zip *.tgz *.html *.js *.data *.wasm
 
-.PHONY: all clean run package
+.PHONY: all clean run package wasm
