@@ -1,6 +1,6 @@
 UNAME=$(shell uname)
 ifeq ($(UNAME), Windows)
-	CROSS=i686-w64-mingw32.static-
+	CROSS=x86_64-w64-mingw32.static-
 endif
 
 SOURCES=$(wildcard *.cc) $(wildcard gam/*.cc)
@@ -8,7 +8,6 @@ CONTENT=$(wildcard content/*.png) $(wildcard content/*.ogg) $(wildcard content/*
 BUILDDIR=$(CROSS)output
 OBJECTS=$(patsubst %.cc,$(BUILDDIR)/%.o,$(SOURCES))
 NAME=eeprom
-APP_NAME=EEPROM
 VERSION=$(shell git describe --tags --dirty)
 
 CC=$(CROSS)g++
@@ -16,15 +15,18 @@ LD=$(CROSS)ld
 AR=$(CROSS)ar
 PKG_CONFIG=$(CROSS)pkg-config
 CFLAGS=-O3 --std=c++14 -Wall -Wextra -Werror -pedantic -I gam -DNDEBUG
-EMFLAGS=-s USE_SDL=2 -s USE_SDL_MIXER=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png"]'
+EMFLAGS=-s USE_SDL=2 -s USE_SDL_MIXER=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png"]' -s USE_OGG=1 -s USE_VORBIS=1
+
+EXECUTABLE=$(BUILDDIR)/$(NAME)
 
 ifeq ($(UNAME), Windows)
 	PACKAGE=$(NAME)-windows-$(VERSION).zip
 	LDFLAGS=-static-libstdc++ -static-libgcc
 	LDLIBS=`$(PKG_CONFIG) sdl2 SDL2_mixer SDL2_image --cflags --libs` -Wl,-Bstatic
+	EXECUTABLE=$(BUILDDIR)/$(NAME).exe
 endif
 ifeq ($(UNAME), Linux)
-	PACKAGE=$(APP_NAME)-linux-$(VERSION).AppImage
+	PACKAGE=$(NAME)-linux-$(VERSION).AppImage
 	LDFLAGS=-static-libstdc++ -static-libgcc
 	LDLIBS=`$(PKG_CONFIG) sdl2 SDL2_mixer SDL2_image --cflags --libs` -Wl,-Bstatic
 endif
@@ -34,8 +36,6 @@ ifeq ($(UNAME), Darwin)
 	CFLAGS+=-mmacosx-version-min=10.9
 endif
 
-EXECUTABLE=$(BUILDDIR)/$(NAME)
-
 all: $(EXECUTABLE)
 
 echo:
@@ -43,6 +43,7 @@ echo:
 	@echo "Sources: $(SOURCES)"
 	@echo "Uname: $(UNAME)"
 	@echo "Package: $(PACKAGE)"
+	@echo "Version: $(VERSION)"
 
 run: $(EXECUTABLE)
 	./$(EXECUTABLE)
@@ -58,9 +59,16 @@ package: $(PACKAGE)
 
 wasm: $(NAME)-$(VERSION).html
 
-$(NAME)-osx-$(VERSION).tgz: $(APP_NAME).app
+web: wasm $(NAME)-$(VERSION).js $(NAME)-$(VERSION).data
+	mkdir -p $(NAME)-web-$(VERSION)
+	cp $(NAME)-$(VERSION).js $(NAME)-web-$(VERSION)
+	cp $(NAME)-$(VERSION).wasm $(NAME)-web-$(VERSION)
+	cp $(NAME)-$(VERSION).data $(NAME)-web-$(VERSION)
+	cp $(NAME)-$(VERSION).html $(NAME)-web-$(VERSION)/index.html
+
+$(NAME)-osx-$(VERSION).tgz: $(NAME).app
 	mkdir $(NAME)
-	cp -r $(APP_NAME).app $(NAME)/.
+	cp -r $(NAME).app $(NAME)/.
 	tar zcf $@ $(NAME)
 	rm -rf $(NAME)
 
@@ -74,32 +82,39 @@ $(NAME)-windows-$(VERSION).zip: $(EXECUTABLE) $(CONTENT)
 $(NAME)-$(VERSION).html: $(SOURCES) $(CONTENT)
 	emcc $(CFLAGS) $(EMFLAGS) -o $@ $(SOURCES) --preload-file content/
 
-$(APP_NAME).app: $(EXECUTABLE) launcher $(CONTENT) Info.plist
-	rm -rf $(APP_NAME).app
-	mkdir -p $(APP_NAME).app/Contents/{MacOS,Frameworks}
-	cp $(EXECUTABLE) $(APP_NAME).app/Contents/MacOS/game
-	cp launcher $(APP_NAME).app/Contents/MacOS/launcher
-	cp -R content $(APP_NAME).app/Contents/MacOS/content
-	cp Info.plist $(APP_NAME).app/Contents/Info.plist
-	cp -R /Library/Frameworks/SDL2.framework $(APP_NAME).app/Contents/Frameworks/SDL2.framework
-	cp -R /Library/Frameworks/SDL2_mixer.framework $(APP_NAME).app/Contents/Frameworks/SDL2_mixer.framework
-	cp -R /Library/Frameworks/SDL2_image.framework $(APP_NAME).app/Contents/Frameworks/SDL2_image.framework
+$(NAME).app: $(EXECUTABLE) launcher $(CONTENT) Info.plist
+	rm -rf $(NAME).app
+	mkdir -p $(NAME).app/Contents/{MacOS,Frameworks}
+	cp $(EXECUTABLE) $(NAME).app/Contents/MacOS/game
+	cp launcher $(NAME).app/Contents/MacOS/launcher
+	cp -R content $(NAME).app/Contents/MacOS/content
+	cp Info.plist $(NAME).app/Contents/Info.plist
+	cp -R /Library/Frameworks/SDL2.framework $(NAME).app/Contents/Frameworks/SDL2.framework
+	cp -R /Library/Frameworks/SDL2_mixer.framework $(NAME).app/Contents/Frameworks/SDL2_mixer.framework
+	cp -R /Library/Frameworks/SDL2_image.framework $(NAME).app/Contents/Frameworks/SDL2_image.framework
 
-$(APP_NAME)-linux-$(VERSION).AppDir: $(EXECUTABLE) $(CONTENT)
+$(NAME)-linux-$(VERSION).AppDir: $(EXECUTABLE) $(CONTENT) AppRun icon.png $(NAME).desktop
 	rm -rf $@
 	mkdir -p $@/usr/{bin,lib}
 	mkdir -p $@/content
 	cp $(EXECUTABLE) $@/usr/bin
 	cp AppRun $@/.
-	cp $(APP_NAME).desktop $@/.
+	cp $(NAME).desktop $@/.
 	cp icon.png $@/.
 	cp $(CONTENT) $@/content/.
 	cp /usr/lib/libSDL2{,_image,_mixer}-2.0.so.0 $@/usr/lib/.
 
-$(APP_NAME)-linux-$(VERSION).AppImage: $(APP_NAME)-linux-$(VERSION).AppDir
-	appimagetool $<
+$(NAME)-linux-$(VERSION).AppImage: $(NAME)-linux-$(VERSION).AppDir
+	ARCH=x86_64 appimagetool $<
 
 clean:
-	rm -rf $(BUILDDIR) *.app *.zip *.tgz *.html *.js *.data *.wasm
+	rm -rf $(BUILDDIR)
 
-.PHONY: all clean run package wasm
+distclean: clean
+	rm -rf *.app *.tgz *.zip
+	rm -rf *.AppDir *.AppImage
+	rm -rf *.html *.js *.data *.wasm
+	rm -rf *-web-*/ *output/
+
+
+.PHONY: all echo clean distclean run package wasm web
